@@ -1,0 +1,488 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_CLOUD")
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum Role {
+  STUDENT
+  COMPANY
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum InterviewRound {
+  APTITUDE
+  GROUP_DISCUSSION
+  HR
+  TECHNICAL
+  MANAGERIAL
+  FINAL
+}
+
+enum CompanyApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum JobStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SHORTLISTED
+  REJECTED
+  SELECTED
+  WITHDRAWN
+  NOT_ELIGIBLE
+  OFFER_ACCEPTED
+  OFFER_REJECTED
+}
+
+enum ScheduleStatus {
+  SCHEDULED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum ScheduleMode {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+enum NotificationType {
+  APPLICATION_SUBMITTED
+  APPLICATION_SHORTLISTED
+  APPLICATION_SELECTED
+  APPLICATION_REJECTED
+  APPLICATION_WITHDRAWN
+
+  JOB_POSTED
+  JOB_UPDATED
+  JOB_ALERT
+
+  SCHEDULE_CREATED
+  SCHEDULE_UPDATED
+  SCHEDULE_APPROVED
+
+  OFFER_ACCEPTED
+  OFFER_REJECTED
+
+  SYSTEM
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  firstname String
+  lastname  String?
+  email     String  @unique
+  password  String
+
+  role   Role
+  status Status @default(INACTIVE)
+
+  student Student?
+  company Company?
+  admin   Admin?
+
+  otp            String?
+  otpExpiry      DateTime?
+  otpAttempts    Int       @default(0)
+  otpGenerations Int       @default(0)
+
+  tokens        Token[]
+  notifications Notification[]
+  sentMessages  ScheduleMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  cgpa        Float?
+  year        Int
+  passingYear Int
+
+  resumeUrl      String?
+  activeBacklogs Int       @default(0)
+  linkedinUrl    String?
+  githubUrl      String?
+  portfolioUrl   String?
+  isPlaced       Boolean   @default(false)
+  placedAt       DateTime?
+
+  skills       Skill[]
+  experiences  Experience[]
+  certificates Certificate[]
+
+  projects     Project[]
+  applications Application[]
+  universityId Int
+  university   University    @relation(fields: [universityId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([departmentId])
+  @@index([passingYear])
+  @@index([isPlaced])
+  @@index([universityId])
+}
+
+model Skill {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  students Student[]
+  jobs     Job[]
+
+  createdAt DateTime @default(now())
+
+  @@index([name])
+}
+
+model Experience {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  companyName String
+  role        String
+  description String?
+
+  startDate DateTime
+  endDate   DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([studentId])
+}
+
+model Certificate {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  title          String
+  issuer         String
+  certificateUrl String?
+
+  issuedDate DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([studentId])
+}
+
+model Project {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  techStack   String?
+
+  githubUrl String?
+  liveUrl   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([studentId])
+}
+
+model Company {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  name        String
+  description String?
+
+  jobs               Job[]
+  interviewSchedules InterviewSchedule[]
+  universities       CompanyUniversity[]
+
+  createdAt DateTime @default(now())
+}
+
+model Admin {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  schedules         InterviewSchedule[]
+  universityId      Int
+  university        University          @relation(fields: [universityId], references: [id])
+  approvedCompanies CompanyUniversity[] @relation("AdminApprovedCompanies")
+
+  @@index([universityId])
+}
+
+model University {
+  id      Int     @id @default(autoincrement())
+  name    String  @unique
+  code    String? @unique
+  city    String?
+  state   String?
+  country String?
+  status  Status  @default(INACTIVE)
+
+  students  Student[]
+  admins    Admin[]
+  companies CompanyUniversity[]
+  jobs      JobUniversity[]
+  schedules InterviewSchedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Department {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  students Student[]
+  jobs     Job[]
+
+  createdAt DateTime @default(now())
+}
+
+model Job {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  location String
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  skills    Skill[]
+  isDeleted Boolean @default(false)
+
+  eligibleDepartments Department[]
+  universities        JobUniversity[]
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId])
+}
+
+model Application {
+  id Int @id @default(autoincrement())
+
+  studentId       Int
+  jobUniversityId Int
+
+  status ApplicationStatus @default(APPLIED)
+
+  currentRound InterviewRound?
+
+  reason String?
+
+  student       Student       @relation(fields: [studentId], references: [id])
+  jobUniversity JobUniversity @relation(fields: [jobUniversityId], references: [id])
+  isAccepted    Boolean       @default(false)
+  acceptedAt    DateTime?
+
+  history ApplicationStatusHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, jobUniversityId])
+  @@index([studentId])
+  @@index([jobUniversityId])
+}
+
+model ApplicationStatusHistory {
+  id Int @id @default(autoincrement())
+
+  applicationId Int
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  status ApplicationStatus
+
+  round InterviewRound?
+
+  reason String?
+
+  createdBy Int?
+
+  createdAt DateTime @default(now())
+
+  @@index([applicationId])
+}
+
+model CompanyUniversity {
+  id Int @id @default(autoincrement())
+
+  companyId    Int
+  universityId Int
+
+  company    Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  university University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  status CompanyApprovalStatus @default(PENDING)
+
+  createdAt       DateTime  @default(now())
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  approvedBy      Int?
+  reason          String?
+  approvedByAdmin Admin?    @relation("AdminApprovedCompanies", fields: [approvedBy], references: [id], onDelete: SetNull)
+
+  @@unique([companyId, universityId])
+  @@index([companyId])
+  @@index([universityId])
+  @@index([status])
+  @@index([approvedBy])
+}
+
+model JobUniversity {
+  id Int @id @default(autoincrement())
+
+  jobId        Int
+  universityId Int
+
+  sentAt     DateTime  @default(now())
+  status     JobStatus @default(PENDING)
+  approvedAt DateTime?
+  rejectedAt DateTime?
+
+  rejectionReason String?
+  rejectionCount  Int     @default(0)
+
+  salary      Float
+  description String?
+  minCgpa     Float?
+  maxBacklogs Int?
+  openings    Int?
+
+  job                 Job        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  university          University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  interviewScheduleId Int?
+
+  interviewSchedule InterviewSchedule? @relation(fields: [interviewScheduleId], references: [id])
+  applications      Application[]
+
+  @@unique([jobId, universityId])
+  @@index([universityId])
+  @@index([jobId])
+  @@index([status])
+  @@index([interviewScheduleId])
+}
+
+model Token {
+  id           Int    @id @default(autoincrement())
+  refreshToken String @unique
+
+  status Status @default(ACTIVE)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model InterviewSchedule {
+  id Int @id @default(autoincrement())
+
+  title String
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  startTime DateTime
+  endTime   DateTime
+
+  venue String?
+
+  status ScheduleStatus @default(SCHEDULED)
+
+  companyApprovalStatus CompanyApprovalStatus @default(PENDING)
+
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  rejectionReason String?
+
+  createdBy    Int
+  admin        Admin       @relation(fields: [createdBy], references: [id])
+  universityId Int?
+  university   University? @relation(fields: [universityId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobUniversities JobUniversity[]
+
+  messages ScheduleMessage[]
+
+  @@index([startTime, endTime])
+  @@index([companyId])
+  @@index([status])
+  @@index([companyApprovalStatus])
+  @@index([universityId])
+}
+
+model ScheduleMessage {
+  id Int @id @default(autoincrement())
+
+  scheduleId Int
+  schedule   InterviewSchedule @relation(fields: [scheduleId], references: [id])
+
+  senderId Int
+  sender   User @relation(fields: [senderId], references: [id])
+
+  message String
+
+  createdAt DateTime @default(now())
+
+  @@index([scheduleId])
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title   String
+  message String
+
+  type NotificationType
+  read Boolean          @default(false)
+
+  //entityId   Int?
+  //entityType String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

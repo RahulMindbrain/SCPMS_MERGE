@@ -1,0 +1,49 @@
+# API Endpoints for Testing in Postman
+
+Base URL: http://localhost:5000/api/auth (assuming routes are mounted at /api/auth)
+
+## Authentication Routes
+
+### 1. Register User
+- **Method:** POST
+- **Endpoint:** /register
+- **Body (JSON):**
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "password123",
+    "role": "student" // or "admin"
+  }
+  ```
+
+### 2. Login User
+- **Method:** POST
+- **Endpoint:** /login
+- **Body (JSON):**
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "password123"
+  }
+  ```
+
+### 3. Refresh Token
+- **Method:** POST
+- **Endpoint:** /refresh-token
+- **Headers:**
+  - Authorization: Bearer <refresh_token>
+- **Body:** (usually empty, token in header)
+
+### 4. Logout User
+- **Method:** POST
+- **Endpoint:** /logout
+- **Headers:**
+  - Authorization: Bearer <access_token>
+
+### 5. Get Current User
+- **Method:** GET
+- **Endpoint:** /me
+- **Headers:**
+  - Authorization: Bearer <access_token>
+
+Note: Ensure the backend routes are properly mounted in index.js, e.g., app.use('/api/auth', authRoutes);

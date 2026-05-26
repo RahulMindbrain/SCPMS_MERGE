@@ -1,0 +1,13 @@
+{
+  "name": "scpms-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:scpms": "npm run dev --workspace=scpms-backend",
+    "dev:resume": "npm run dev --workspace=resume-analyzer",
+    "dev:frontend": "npm run dev --workspace=scpms-frontend2"
+  }
+}

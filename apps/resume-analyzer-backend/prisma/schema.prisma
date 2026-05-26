@@ -1,0 +1,174 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?    
+  email     String   @unique
+  password  String
+  role      String    @default("student") // 'admin' or 'student'
+  phone     String?  @unique
+  bio       String?    
+  profilePic String?   
+  course    String?   // For students
+  status    String    @default("Active") // 'Active', 'Hired', 'Needs Review'
+  lastActive DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  github    String?
+  linkedin  String?
+  updatedAt DateTime? @updatedAt
+
+  isVerified  Boolean  @default(false)
+  otp         String?
+  otpExpires  DateTime?
+  userType    String?   // FRESHER, EXPERIENCED
+  targetRole  String?
+  yearsOfExperience String?
+
+
+  resumes      Resume[] 
+  jobs         Job[] 
+  applications Application[]
+  helpTickets  HelpTicket[]
+
+  @@map("users")
+}
+
+model Resume {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  fileUrl   String
+  fileName  String
+  extractedText String?
+  createdAt  DateTime @default(now())
+
+  user         User          @relation(fields: [userId], references: [id])
+  analysis     Analysis?  
+  applications Application[]
+
+  @@map("resumes")
+}
+
+model Analysis {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  resumeId        String   @unique @db.ObjectId
+  atsScore        Int
+  scoreBreakdown  Json?
+  keywordsMissing Json
+  jobsMatched     Int
+  suggestions     Json
+  trends          Json
+  summary         String?
+  experienceLevel String?
+  topStrengths    Json?
+  weaknesses      Json?
+  roadmap         Json?
+  completedPhases Int[]    @default([])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id])
+
+  @@map("analysis")
+}
+
+model Job {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  company          String
+  location         String
+  description      String
+  type             String   @default("Full-time") // 'Full-time', 'Part-time', etc.
+  experience       String?
+  requirements     String?
+  responsibilities String?
+  skillsRequired   String[] // Maps to 'tags' in frontend
+  salary           String?
+  isHired          Boolean  @default(false)
+  userId           String   @db.ObjectId
+  createdAt        DateTime @default(now())
+
+  jdSource         String?  @default("MANUAL")
+  jdText           String?
+
+  user         User          @relation(fields: [userId], references: [id])  
+  applications Application[]
+
+  @@map("jobs")
+}
+
+model Application {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  jobId     String   @db.ObjectId
+  resumeId  String   @db.ObjectId
+  status    String   @default("Applied") // 'Applied', 'Reviewed', 'Rejected'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  job    Job    @relation(fields: [jobId], references: [id])
+  resume Resume @relation(fields: [resumeId], references: [id])
+
+  @@unique([userId, jobId])
+  @@map("applications")
+}
+
+model Faq {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  question  String
+  answer    String
+  category  String   @default("GENERAL")
+  createdAt DateTime @default(now())
+
+  @@map("faqs")
+}
+
+model HelpTicket {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  subject   String
+  message   String
+  status    String   @default("OPEN") // OPEN, RESOLVED
+  reply     String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("help_tickets")
+}
+
+model SystemConfig {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  maintenanceMode  Boolean  @default(false)
+  updatedAt        DateTime @updatedAt
+
+  @@map("system_configs")
+}
+
+model AIPrompt {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique // 'analysis_fresher', 'analysis_experienced', etc.
+  content   String
+  isActive  Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+
+  @@map("ai_prompts")
+}
+
+model JobTrack {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique // 'Frontend Developer'
+  skills    String[] // ['React', 'CSS']
+  isActive  Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+
+  @@map("job_tracks")
+}
+

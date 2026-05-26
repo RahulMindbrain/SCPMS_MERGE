@@ -1,0 +1,22 @@
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+async function checkResumes() {
+    try {
+        const resumes = await prisma.resume.findMany({
+            take: 5,
+            select: {
+                id: true,
+                fileName: true,
+                fileUrl: true
+            }
+        });
+        console.log(JSON.stringify(resumes, null, 2));
+    } catch (error) {
+        console.error(error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+checkResumes();
