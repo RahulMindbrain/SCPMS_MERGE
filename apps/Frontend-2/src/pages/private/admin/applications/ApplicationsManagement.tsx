@@ -115,7 +115,7 @@ const ApplicationsManagement: React.FC = () => {
       headers.join(","),
       ...filteredApplications.map(app => [
         app.applicationId,
-        app.studentId,
+        // app.studentId,
         `"${app.name}"`,
         app.email,
         `"${app.jobTitle}"`,
@@ -232,14 +232,14 @@ const ApplicationsManagement: React.FC = () => {
                 </div>
               </div>
 
-      {/* Company */}
-      <div className="xl:col-span-3 space-y-2">
-        <label className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground">
-          Hiring Partner
-        </label>
+              {/* Company */}
+              <div className="xl:col-span-3 space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground">
+                  Hiring Partner
+                </label>
 
-        <Select value={selectedCompanyId} onValueChange={handleCompanyChange}>
-          <SelectTrigger className="
+                <Select value={selectedCompanyId} onValueChange={handleCompanyChange}>
+                  <SelectTrigger className="
 h-14
 w-full
 rounded-2xl
@@ -254,46 +254,46 @@ shadow-sm
 hover:border-primary/30
 overflow-visible
 ">
-            <div className="flex items-center gap-2 truncate">
-              <Building2 className="size-4 text-primary/50 shrink-0" />
-              <SelectValue placeholder="All Companies" />
-            </div>
-          </SelectTrigger>
+                    <div className="flex items-center gap-2 truncate">
+                      <Building2 className="size-4 text-primary/50 shrink-0" />
+                      <SelectValue placeholder="All Companies" />
+                    </div>
+                  </SelectTrigger>
 
-          <SelectContent
-            position="popper"
-            align="start"
-            className="w-[var(--radix-select-trigger-width)] min-w-[240px] rounded-2xl border-border bg-background/95 backdrop-blur-xl shadow-2xl p-2"
-          >
-            <SelectItem value="all" className="rounded-xl py-3">
-              ALL COMPANIES
-            </SelectItem>
+                  <SelectContent
+                    position="popper"
+                    align="start"
+                    className="w-[var(--radix-select-trigger-width)] min-w-[240px] rounded-2xl border-border bg-background/95 backdrop-blur-xl shadow-2xl p-2"
+                  >
+                    <SelectItem value="all" className="rounded-xl py-3">
+                      ALL COMPANIES
+                    </SelectItem>
 
-            {companies.map((c: any) => (
-              <SelectItem
-                key={c.id}
-                value={c.id.toString()}
-                className="rounded-xl py-3"
-              >
-                {c.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+                    {companies.map((c: any) => (
+                      <SelectItem
+                        key={c.id}
+                        value={c.id.toString()}
+                        className="rounded-xl py-3"
+                      >
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-      {/* Schedule */}
-      <div className="xl:col-span-5 space-y-2">
-        <label className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground">
-          Interview Drive
-        </label>
+              {/* Schedule */}
+              <div className="xl:col-span-5 space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground">
+                  Interview Drive
+                </label>
 
-        <Select
-          value={scheduleId?.toString() || ""}
-          onValueChange={handleScheduleChange}
-          disabled={schedules.length === 0}
-        >
-          <SelectTrigger className="
+                <Select
+                  value={scheduleId?.toString() || ""}
+                  onValueChange={handleScheduleChange}
+                  disabled={schedules.length === 0}
+                >
+                  <SelectTrigger className="
 h-14
 w-full
 rounded-2xl
@@ -308,18 +308,18 @@ shadow-sm
 hover:border-primary/30
 overflow-visible
 ">
-            <div className="flex items-center gap-2 truncate">
-              <Briefcase className="size-4 text-primary/50 shrink-0" />
-              <SelectValue
-                placeholder={loading ? "Loading..." : "Select Schedule"}
-              />
-            </div>
-          </SelectTrigger>
+                    <div className="flex items-center gap-2 truncate">
+                      <Briefcase className="size-4 text-primary/50 shrink-0" />
+                      <SelectValue
+                        placeholder={loading ? "Loading..." : "Select Schedule"}
+                      />
+                    </div>
+                  </SelectTrigger>
 
-          <SelectContent
-            position="popper"
-            align="start"
-            className="
+                  <SelectContent
+                    position="popper"
+                    align="start"
+                    className="
 w-[var(--radix-select-trigger-width)]
 min-w-[240px]
 max-w-[420px]
@@ -331,27 +331,27 @@ backdrop-blur-xl
 shadow-2xl
 p-2
 "
-          >
-            {schedules.map((s: any) => (
-              <SelectItem
-                key={s.id}
-                value={s.id.toString()}
-                className="rounded-xl py-3"
-              >
-                <div className="min-w-0 flex flex-col">
-                  <span className="block truncate font-bold text-[12px]">
-                    {s.title}
-                  </span>
+                  >
+                    {schedules.map((s: any) => (
+                      <SelectItem
+                        key={s.id}
+                        value={s.id.toString()}
+                        className="rounded-xl py-3"
+                      >
+                        <div className="min-w-0 flex flex-col">
+                          <span className="block truncate font-bold text-[12px]">
+                            {s.title}
+                          </span>
 
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1 truncate">
-                    {s.companyName}
-                  </span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1 truncate">
+                            {s.companyName}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </div>
@@ -390,10 +390,10 @@ p-2
                               {app.name?.charAt(0) || "S"}
                             </div>
                             <div>
-                              <div className="flex items-center gap-2">
+                              {/* <div className="flex items-center gap-2">
                                 <p className="font-bold text-foreground group-hover:text-primary transition-colors tracking-tight">{app.name}</p>
                                 <span className="text-[9px] font-black text-muted-foreground/50">ID: {app.studentId}</span>
-                              </div>
+                              </div> */}
                               <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">{app.email}</p>
                             </div>
                           </div>
@@ -474,7 +474,7 @@ p-2
                       <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
                         <Hash className="size-3" /> Student ID
                       </p>
-                      <p className="text-xs font-bold text-foreground truncate">{app.studentId}</p>
+                      {/* <p className="text-xs font-bold text-foreground truncate">{app.studentId}</p> */}
                     </div>
                   </div>
                 </div>
