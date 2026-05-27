@@ -182,7 +182,7 @@ const StudentManagement: React.FC = () => {
                     <SelectTrigger className="saas-input">
                       <SelectValue placeholder="Select Dept" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper">
                       {departments.map((dept: any) => (
                         <SelectItem key={dept.id} value={dept.name || dept.deptName}>
                           {dept.name || dept.deptName}

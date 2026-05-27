@@ -558,7 +558,7 @@ const Applicants: React.FC = () => {
                     <SelectValue placeholder="All Jobs" />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-border shadow-2xl p-1.5 min-w-[200px]">
+                <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)] min-w-[200px] rounded-xl border-border bg-background/95 backdrop-blur-xl shadow-2xl p-1.5">
                   <SelectItem value="All Jobs" className="rounded-lg py-1.5 focus:bg-primary/5 cursor-pointer">
                     <span className="font-semibold text-xs text-zinc-650 dark:text-zinc-350">All Jobs</span>
                   </SelectItem>
@@ -580,7 +580,7 @@ const Applicants: React.FC = () => {
                     <SelectValue placeholder="All Departments" />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-border shadow-2xl p-1.5 min-w-[200px]">
+                <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)] min-w-[200px] rounded-xl border-border bg-background/95 backdrop-blur-xl shadow-2xl p-1.5">
                   <SelectItem value="All Departments" className="rounded-lg py-1.5 focus:bg-primary/5 cursor-pointer">
                     <span className="font-semibold text-xs text-zinc-650 dark:text-zinc-350">All Depts</span>
                   </SelectItem>
@@ -602,7 +602,7 @@ const Applicants: React.FC = () => {
                     <SelectValue placeholder="All Status" />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-border shadow-2xl p-1.5 min-w-[180px]">
+                <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)] min-w-[180px] rounded-xl border-border bg-background/95 backdrop-blur-xl shadow-2xl p-1.5">
                   <SelectItem value="ALL" className="rounded-lg py-1.5 focus:bg-primary/5 cursor-pointer">
                     <span className="font-semibold text-xs text-zinc-650 dark:text-zinc-350">All Status</span>
                   </SelectItem>
@@ -828,7 +828,7 @@ const Applicants: React.FC = () => {
                                       {formatStage(app.status, app.currentRound)}
                                     </SelectValue>
                                   </SelectTrigger>
-                                  <SelectContent className="rounded-xl border border-zinc-200/80 dark:border-zinc-800 shadow-xl p-1.5 bg-white dark:bg-zinc-950 min-w-[165px]">
+                                  <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)] min-w-[165px] rounded-xl border border-zinc-200/80 dark:border-zinc-800 shadow-xl p-1.5 bg-white dark:bg-zinc-950">
                                     <SelectItem value="APPLIED" disabled={isBackward(app.status, 'APPLIED')} className="rounded-lg py-1.5 text-xs text-zinc-700 dark:text-zinc-300 cursor-pointer focus:bg-zinc-50 dark:focus:bg-zinc-900">
                                       <div className="flex items-center gap-2 font-medium">
                                         <Clock size={13} className="text-zinc-400 shrink-0" />

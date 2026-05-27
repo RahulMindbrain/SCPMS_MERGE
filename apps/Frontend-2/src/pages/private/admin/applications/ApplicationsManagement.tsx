@@ -148,122 +148,210 @@ const ApplicationsManagement: React.FC = () => {
 
       <div className="space-y-6">
         {/* Filters & Actions Bar */}
-        <div className="saas-card overflow-hidden border-none shadow-xl bg-background/50 backdrop-blur-sm">
-          <div className="p-4 sm:p-6 border-b border-border/50 bg-muted/10">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-2xl bg-primary/10 text-primary shadow-sm border border-primary/20">
-                  <Layers className="size-6" />
-                </div>
-                <div className="space-y-0.5">
-                  <h3 className="text-base font-black text-foreground tracking-tight leading-none">Application Pipeline</h3>
-                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">Admin Management Console</p>
-                </div>
+        {/* Filters & Actions Bar */}
+        <div className="relative overflow-visible rounded-[32px] border border-border/50 bg-gradient-to-br from-background via-background to-muted/20 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+
+          {/* Top Header */}
+          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 px-6 lg:px-8 py-6 border-b border-border/40">
+
+            {/* Left */}
+            <div className="flex items-center gap-4">
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 shadow-sm">
+                <Layers className="size-7 text-primary" />
               </div>
-              
-              <div className="flex items-center gap-3 w-full lg:w-auto">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleReset}
-                  className="flex-1 lg:flex-none h-11 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] gap-2 bg-background hover:bg-rose-50 transition-all duration-300"
-                >
-                  <FilterX className="size-4 text-rose-500" /> Reset
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleExport}
-                  disabled={filteredApplications.length === 0}
-                  className="flex-1 lg:flex-none h-11 px-8 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] gap-2 bg-primary/5 text-primary border-primary/10 hover:bg-primary hover:text-white transition-all duration-300"
-                >
-                  <Download className="size-4" /> Export
-                </Button>
-                {meta && (
-                  <div className="hidden xl:flex h-11 items-center px-6 rounded-2xl bg-primary/5 border border-primary/10 text-[10px] font-black text-primary uppercase tracking-[0.2em]">
-                    Total: {meta.total}
-                  </div>
-                )}
+
+              <div>
+                <h2 className="text-xl font-black tracking-tight text-foreground">
+                  Application Pipeline
+                </h2>
+
+                <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground font-bold mt-1">
+                  Admin Management Console
+                </p>
               </div>
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-3 w-full xl:w-auto">
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleReset}
+                className="h-12 px-6 rounded-2xl border-border/60 bg-background hover:bg-rose-50 hover:border-rose-200 transition-all duration-300"
+              >
+                <FilterX className="size-4 text-rose-500 mr-2" />
+                <span className="font-black text-[11px] uppercase tracking-[0.2em]">
+                  Reset
+                </span>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExport}
+                disabled={filteredApplications.length === 0}
+                className="h-12 px-7 rounded-2xl bg-primary/5 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300"
+              >
+                <Download className="size-4 mr-2" />
+                <span className="font-black text-[11px] uppercase tracking-[0.2em]">
+                  Export
+                </span>
+              </Button>
+
+              {meta && (
+                <div className="hidden 2xl:flex h-12 items-center rounded-2xl border border-primary/10 bg-primary/5 px-6">
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">
+                    Total Applications : {meta.total}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="p-4 sm:p-8 bg-muted/5">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-              {/* Search Field */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Candidate Search</label>
-                </div>
+          {/* Filters */}
+          <div className="p-6 lg:p-8">
+
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-end">
+
+              {/* Search */}
+              <div className="xl:col-span-4 space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground">
+                  Candidate Search
+                </label>
+
                 <div className="relative group">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/30 group-focus-within:text-primary transition-colors" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-primary/40 group-focus-within:text-primary transition-colors" />
+
                   <Input
                     placeholder="Search by name or email..."
-                    className="pl-11 h-14 bg-background border-border/40 rounded-2xl text-sm shadow-sm focus-visible:ring-primary/20 hover:border-primary/30 transition-all"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    className="h-14 rounded-2xl border-border/50 bg-background/80 pl-12 text-sm shadow-sm transition-all duration-300 hover:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/20"
                   />
                 </div>
               </div>
 
-              {/* Company Selector */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Hiring Partner</label>
-                </div>
-                <Select value={selectedCompanyId} onValueChange={handleCompanyChange}>
-                  <SelectTrigger className="h-14 bg-background border-border/40 rounded-2xl text-xs font-bold uppercase tracking-widest px-4 shadow-sm hover:border-primary/30 transition-all">
-                    <div className="flex items-center gap-2 truncate">
-                      <Building2 className="size-4 text-primary/40 shrink-0" />
-                      <SelectValue placeholder="All Companies" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent position="popper" align="start" className="rounded-2xl border-border shadow-2xl p-2 min-w-[240px]">
-                    <SelectItem value="all" className="rounded-xl py-3 focus:bg-primary/5">
-                      <span className="font-bold text-[10px] uppercase tracking-widest">All Companies</span>
-                    </SelectItem>
-                    {companies.map((c: any) => (
-                      <SelectItem key={c.id} value={c.id.toString()} className="rounded-xl py-3 focus:bg-primary/5">
-                        <span className="font-bold text-[10px] uppercase tracking-widest">{c.name}</span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+      {/* Company */}
+      <div className="xl:col-span-3 space-y-2">
+        <label className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground">
+          Hiring Partner
+        </label>
 
-              {/* Schedule Selector */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Interview Drive</label>
+        <Select value={selectedCompanyId} onValueChange={handleCompanyChange}>
+          <SelectTrigger className="
+h-14
+w-full
+rounded-2xl
+border-border/50
+bg-background/80
+px-4
+text-[11px]
+font-black
+uppercase
+tracking-[0.18em]
+shadow-sm
+hover:border-primary/30
+overflow-visible
+">
+            <div className="flex items-center gap-2 truncate">
+              <Building2 className="size-4 text-primary/50 shrink-0" />
+              <SelectValue placeholder="All Companies" />
+            </div>
+          </SelectTrigger>
+
+          <SelectContent
+            position="popper"
+            align="start"
+            className="w-[var(--radix-select-trigger-width)] min-w-[240px] rounded-2xl border-border bg-background/95 backdrop-blur-xl shadow-2xl p-2"
+          >
+            <SelectItem value="all" className="rounded-xl py-3">
+              ALL COMPANIES
+            </SelectItem>
+
+            {companies.map((c: any) => (
+              <SelectItem
+                key={c.id}
+                value={c.id.toString()}
+                className="rounded-xl py-3"
+              >
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Schedule */}
+      <div className="xl:col-span-5 space-y-2">
+        <label className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground">
+          Interview Drive
+        </label>
+
+        <Select
+          value={scheduleId?.toString() || ""}
+          onValueChange={handleScheduleChange}
+          disabled={schedules.length === 0}
+        >
+          <SelectTrigger className="
+h-14
+w-full
+rounded-2xl
+border-border/50
+bg-background/80
+px-4
+text-[11px]
+font-black
+uppercase
+tracking-[0.18em]
+shadow-sm
+hover:border-primary/30
+overflow-visible
+">
+            <div className="flex items-center gap-2 truncate">
+              <Briefcase className="size-4 text-primary/50 shrink-0" />
+              <SelectValue
+                placeholder={loading ? "Loading..." : "Select Schedule"}
+              />
+            </div>
+          </SelectTrigger>
+
+          <SelectContent
+            position="popper"
+            align="start"
+            className="
+w-[var(--radix-select-trigger-width)]
+min-w-[240px]
+max-w-[420px]
+rounded-2xl
+border
+border-border/50
+bg-background/95
+backdrop-blur-xl
+shadow-2xl
+p-2
+"
+          >
+            {schedules.map((s: any) => (
+              <SelectItem
+                key={s.id}
+                value={s.id.toString()}
+                className="rounded-xl py-3"
+              >
+                <div className="min-w-0 flex flex-col">
+                  <span className="block truncate font-bold text-[12px]">
+                    {s.title}
+                  </span>
+
+                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1 truncate">
+                    {s.companyName}
+                  </span>
                 </div>
-                <Select 
-                  value={scheduleId?.toString() || ""} 
-                  onValueChange={handleScheduleChange}
-                  disabled={schedules.length === 0}
-                >
-                  <SelectTrigger className="h-14 bg-background border-border/40 rounded-2xl text-xs font-bold uppercase tracking-widest px-4 shadow-sm hover:border-primary/30 transition-all">
-                    <div className="flex items-center gap-2 truncate">
-                      <Briefcase className="size-4 text-primary shrink-0" />
-                      <SelectValue placeholder={loading ? "Loading..." : "Select Schedule"} />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent position="popper" align="start" className="rounded-2xl border-border shadow-2xl p-2 w-[340px]">
-                    {schedules.map((s: any) => (
-                      <SelectItem key={s.id} value={s.id.toString()} className="rounded-xl py-3 focus:bg-primary/5 border-b border-border/5 last:border-0 mb-1">
-                        <div className="flex flex-col gap-1">
-                          <span className="font-bold text-[11px] text-foreground truncate max-w-[280px]">
-                            {s.title}
-                          </span>
-                          <div className="flex items-center gap-2 opacity-60">
-                            <span className="text-[9px] font-black text-primary uppercase tracking-widest">{s.companyName}</span>
-                            <span className="text-[9px] font-medium">• {s.startTime ? new Date(s.startTime).toLocaleDateString() : 'N/A'}</span>
-                          </div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
             </div>
           </div>
         </div>
@@ -276,7 +364,7 @@ const ApplicationsManagement: React.FC = () => {
 
         {!loading && scheduleId && (
           <>
-            <div className="hidden md:block saas-card p-0 overflow-hidden">
+            <div className="hidden md:block saas-card p-0 overflow-visible">
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>

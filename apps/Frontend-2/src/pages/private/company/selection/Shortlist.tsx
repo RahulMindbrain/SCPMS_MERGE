@@ -121,7 +121,7 @@ const Shortlist: React.FC = () => {
                 <SelectValue placeholder="All Departments" />
               </div>
             </SelectTrigger>
-            <SelectContent className="rounded-2xl border-border shadow-2xl p-2 min-w-[220px]">
+            <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)] min-w-[220px] rounded-2xl border-border shadow-2xl p-2 bg-background/95 backdrop-blur-xl">
               <SelectItem value="All" className="rounded-xl py-2 focus:bg-primary/5">
                 <span className="font-bold text-[10px] uppercase tracking-wider">All Departments</span>
               </SelectItem>
