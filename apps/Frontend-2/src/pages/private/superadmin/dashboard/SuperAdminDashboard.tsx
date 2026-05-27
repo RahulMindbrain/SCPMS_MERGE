@@ -62,10 +62,7 @@ const OnboardingFlow = ({ admins, companies, universities }: any) => {
       <div className="flex items-center justify-between mb-8 relative z-10">
         <div>
           <h3 className="text-xl font-black text-foreground tracking-tight">Onboarding Pipeline</h3>
-          <p className="text-xs font-medium text-muted-foreground mt-0.5">Real-time status of entities moving through the system</p>
-        </div>
-        <div className="px-4 py-1.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest shadow-sm">
-          Active Flow Control
+          <p className="text-xs font-medium text-muted-foreground mt-0.5">Pending registrations needing your review.</p>
         </div>
       </div>
 
@@ -102,12 +99,6 @@ const OnboardingFlow = ({ admins, companies, universities }: any) => {
                   {step.status === 'completed' && <CheckCircle2 className="size-3.5 text-emerald-500" />}
                 </h4>
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">{step.desc}</p>
-
-                {step.status === 'attention' && (
-                  <div className="mt-5 flex items-center gap-2 text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 w-fit px-3 py-1 rounded-lg">
-                    <Clock className="size-3" /> Priority Action
-                  </div>
-                )}
               </div>
 
               {idx < steps.length - 1 && (
@@ -151,17 +142,7 @@ const SuperAdminDashboard = () => {
         badge="SuperAdmin Control"
         icon={LayoutDashboard}
         variant="indigo"
-      >
-        <div className="flex items-center gap-3">
-          <div className="hidden md:flex flex-col items-end mr-4">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Network Status</span>
-            <div className="flex items-center gap-1.5 text-emerald-500 font-black text-xs uppercase">
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              SuperAdmin Online
-            </div>
-          </div>
-        </div>
-      </PageHeader>
+      />
 
       <div className="space-y-8 pb-10">
         {/* Stats Grid */}
@@ -177,9 +158,6 @@ const SuperAdminDashboard = () => {
               <div className="flex items-center justify-between mb-4">
                 <div className={`size-12 rounded-2xl ${stat.bg} flex items-center justify-center transition-transform group-hover:rotate-12`}>
                   <stat.icon className={`size-6 ${stat.color}`} />
-                </div>
-                <div className="flex items-center gap-1 text-emerald-500 font-black text-[10px] uppercase tracking-wider">
-                  <Zap className="size-3" /> +12%
                 </div>
               </div>
               <div>
@@ -202,11 +180,7 @@ const SuperAdminDashboard = () => {
               <div className="flex items-center justify-between mb-8 relative z-10">
                 <div>
                   <h3 className="text-xl font-black text-foreground tracking-tight">Recent Registrations</h3>
-                  <p className="text-xs font-medium text-muted-foreground">Monitoring new institutional and corporate partners</p>
-                </div>
-                <div className="flex items-center gap-2">
-                   <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-                   <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Real-time Feed</span>
+                  <p className="text-xs font-medium text-muted-foreground">New institutional and corporate partners</p>
                 </div>
               </div>
 
@@ -268,12 +242,7 @@ const SuperAdminDashboard = () => {
             <div className="saas-card h-full relative overflow-hidden bg-card text-card-foreground border-border/50 transition-all duration-500 hover:border-indigo-500/50">
               <div className="relative z-10 flex flex-col h-full">
                 <div className="mb-8">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="size-2 rounded-full bg-indigo-500 animate-pulse" />
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Global Command</span>
-                  </div>
                   <h3 className="text-2xl font-black text-foreground tracking-tight">System Broadcast</h3>
-                  <p className="text-sm text-muted-foreground mt-1 font-medium leading-relaxed italic">Deploy global directives and system-wide protocols.</p>
                 </div>
 
                 <div className="space-y-3 flex-1">
@@ -288,7 +257,6 @@ const SuperAdminDashboard = () => {
                           <action.icon className="size-5" />
                         </div>
                         <div className="text-left">
-                          <span className="text-[10px] font-black opacity-50 uppercase tracking-widest block mb-0.5">Directive Control</span>
                           <span className="text-xs font-black uppercase tracking-widest">{action.label}</span>
                         </div>
                       </div>
@@ -297,14 +265,7 @@ const SuperAdminDashboard = () => {
                   ))}
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-border/50 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Protocol v4.2.0 Active</span>
-                  </div>
-                  <div className="px-3 py-1 rounded-full bg-indigo-500/10 text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
-                    Secure Link
-                  </div>
-                </div>
+                {/* Protocol footer hidden */}
               </div>
               
               {/* Decorative elements */}

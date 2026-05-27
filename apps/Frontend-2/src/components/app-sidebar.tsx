@@ -35,6 +35,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, userType, fullName, initials } = useAuth()
   const role = userType?.toLowerCase()
 
+  const displayRole = React.useMemo(() => {
+    if (!role) return "";
+    if (role === "super_admin" || role === "superadmin") return "Super Admin";
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  }, [role]);
+
   const navigation = React.useMemo(() => {
     if (role === "admin") {
       return {
@@ -192,8 +198,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       } as React.CSSProperties}
       {...props}
     >
-      <SidebarHeader className="flex h-16 shrink-0 items-center overflow-hidden border-b border-slate-100/80 dark:border-slate-900/80 px-4 group-data-[collapsible=icon]:px-0">
-        <div className="flex w-full items-center justify-start gap-3 group-data-[collapsible=icon]:justify-center transition-all duration-300">
+      <SidebarHeader className="flex h-20 shrink-0 items-center overflow-hidden border-b border-slate-100/80 dark:border-slate-900/80 px-4 pt-3 pb-1 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:pt-2 transition-all duration-300">
+        <div className="flex w-full items-center justify-start gap-3 group-data-[collapsible=icon]:justify-center transition-all duration-300 mt-2">
           <div className="flex aspect-square size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 shadow-md shadow-indigo-500/25 dark:shadow-indigo-500/10">
             <GraduationCap className="size-5 text-white" />
           </div>
@@ -202,14 +208,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               SCPMS
             </span>
             <span className="text-[9.5px] font-bold tracking-[0.12em] text-slate-400 dark:text-slate-500 uppercase">
-              {role} Portal
+              {displayRole} Portal
             </span>
           </div>
         </div>
       </SidebarHeader>
 
       {/* ── Navigation ── */}
-      <SidebarContent className="no-scrollbar gap-0.5 px-2 py-2">
+      <SidebarContent className="no-scrollbar gap-0.5 px-2 pt-4 pb-2">
         <NavMain items={navigation.main} />
         <SidebarSeparator className="mx-3 my-1 bg-slate-100 dark:bg-slate-900/60 opacity-80" />
         <NavSecondary items={navigation.secondary} />

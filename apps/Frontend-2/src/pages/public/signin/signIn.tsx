@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "@/redux/thunks/loginThunk";
 import type { AppDispatch } from "@/redux/store/store";
 import type { RootState } from "@/redux/reducers/rootReducer";
-import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
+import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, ChevronLeft } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -67,12 +67,12 @@ const SignIn: React.FC = () => {
         </div>
 
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-16">
+          <Link to="/" className="flex items-center gap-3 mb-16 w-fit hover:opacity-90 transition-opacity">
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
               <GraduationCap className="text-white" size={24} />
             </div>
             <span className="text-xl font-bold tracking-tight text-white uppercase">Smart CPMS</span>
-          </div>
+          </Link>
 
           <div className="max-w-md">
             <h1 className="text-4xl xl:text-5xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
@@ -111,7 +111,7 @@ const SignIn: React.FC = () => {
         <div className="absolute top-12 right-12">
           <ModeToggle />
         </div>
-        <motion.div 
+        <motion.div  
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
