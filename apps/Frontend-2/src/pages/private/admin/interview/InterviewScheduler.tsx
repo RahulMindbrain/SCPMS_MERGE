@@ -376,13 +376,13 @@ const InterviewSchedulerPage: React.FC = () => {
                           <p className="text-sm font-bold text-foreground truncate max-w-[150px]">{drive.venue}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      {/* <div className="flex items-center gap-3">
                         <div className="size-10 rounded-xl bg-muted flex items-center justify-center text-amber-500 border border-border"><Briefcase size={16} /></div>
                         <div className="space-y-0.5">
                           <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Linked Roles</p>
                           <p className="text-sm font-bold text-foreground">{drive.jobs?.length || 0} Openings</p>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
@@ -497,7 +497,7 @@ const InterviewSchedulerPage: React.FC = () => {
     setWizardCompanyId('');
     setWizardUniversityId('');
   }}
-  title="Campus Drive Wizard"
+  title="Campus Drive Scheduler"
   subtitle="Initiate and configure new recruitment timelines"
   maxWidth="max-w-5xl"
 >
