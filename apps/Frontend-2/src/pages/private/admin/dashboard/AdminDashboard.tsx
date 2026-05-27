@@ -14,7 +14,6 @@ import {
   Clock, 
   ShieldCheck, 
   Zap, 
-  FileText,
   UserPlus,
   Mail,
   Building2
@@ -134,7 +133,7 @@ const ActivityFeed = ({ notifications, loading }: { notifications: any[]; loadin
     <div className="saas-card h-full flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-black text-foreground tracking-tight">Recent Activity</h3>
-        <button className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">View All</button>
+        {/* <button className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">View All</button> */}
       </div>
       
       <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2 max-h-[400px]">
@@ -192,7 +191,7 @@ const QuickActions = () => {
   const navigate = useNavigate()
   const actions = [
     { label: 'Schedule Interview', icon: UserPlus, color: 'bg-indigo-500', path: '/admin/event-management' },
-    { label: 'Generate Report', icon: FileText, color: 'bg-emerald-500', path: '/admin/report' },
+  
     { label: 'Send Announcement', icon: Mail, color: 'bg-amber-500', path: '/admin/bulk-email' },
   ]
 

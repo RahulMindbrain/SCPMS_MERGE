@@ -360,9 +360,9 @@ const PlacementDriveManagement: React.FC = () => {
                                       {job.description || "No description provided."}
                                     </p>
 
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                                      <div className="space-y-1">
-                                        <p className="text-[8px] md:text-[9px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-9">
+                                      <div className="space-y-2">
+                                        <p className="text-[8px] md:text-[9px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2.5">
                                           <IndianRupee className="size-2.5 md:size-3 text-emerald-500" /> Package
                                         </p>
                                         <p className="text-xs md:text-sm font-bold text-foreground">{job.formattedSalary} LPA</p>
