@@ -637,7 +637,7 @@ const InterviewSchedulerPage: React.FC = () => {
 
                 <div className="flex flex-wrap gap-2 mb-6">
                   {(ju.job?.eligibleDepartments || []).slice(0, 2).map((dept: any) => (
-                    <Badge key={dept.id} variant="secondary" className="bg-slate-50 text-slate-500 border-slate-100 text-[8px] font-black uppercase px-3 py-1 tracking-widest">
+                    <Badge key={dept.id} variant="secondary" className="bg-slate-50 text-slate-500 border-slate-100 text-[8px] font-black uppercase px-3 py-1 tracking-widest whitespace-normal h-auto text-left leading-tight break-words max-w-full">
                       {dept.name || `Dept #${dept.id}`}
                     </Badge>
                   ))}

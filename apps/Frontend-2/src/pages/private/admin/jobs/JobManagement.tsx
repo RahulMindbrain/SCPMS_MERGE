@@ -450,7 +450,7 @@ const AdminJobManagement: React.FC = () => {
                     <Badge
                       key={dept.id || idx}
                       variant="outline"
-                      className="bg-slate-100/50 dark:bg-slate-800/50 border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-400 font-semibold text-[9px] tracking-wide px-2 py-0.5 rounded"
+                      className="bg-slate-100/50 dark:bg-slate-800/50 border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-400 font-semibold text-[9px] tracking-wide px-2 py-0.5 rounded whitespace-normal h-auto text-left leading-tight break-words max-w-full"
                     >
                       {typeof dept === 'object' ? (dept.name || `Dept #${dept.id}`) : dept}
                     </Badge>

@@ -349,7 +349,7 @@ const PlacementDriveManagement: React.FC = () => {
 
                                       <div className="flex flex-wrap gap-1.5 md:gap-2">
                                         {(job.departments?.length ? job.departments : ['All Depts']).slice(0, 2).map((dept: string) => (
-                                          <Badge key={dept} variant="outline" className="bg-muted/30 border-border text-[8px] md:text-[9px] font-black uppercase tracking-widest px-2 md:px-2.5">
+                                          <Badge key={dept} variant="outline" className="bg-muted/30 border-border text-[8px] md:text-[9px] font-black uppercase tracking-widest px-2 md:px-2.5 whitespace-normal h-auto text-center leading-tight break-words max-w-full">
                                             {dept}
                                           </Badge>
                                         ))}

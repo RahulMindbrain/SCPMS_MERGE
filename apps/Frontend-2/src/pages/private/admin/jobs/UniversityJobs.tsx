@@ -270,7 +270,7 @@ const UniversityJobs: React.FC = () => {
                       <Badge 
                         key={d.id || idx} 
                         variant="outline" 
-                        className="bg-primary/5 dark:bg-primary/10 border-transparent text-primary/70 dark:text-primary/50 font-black text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-md"
+                        className="bg-primary/5 dark:bg-primary/10 border-transparent text-primary/70 dark:text-primary/50 font-black text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-md whitespace-normal h-auto text-left leading-tight break-words max-w-full"
                       >
                         {deptName}
                       </Badge>
