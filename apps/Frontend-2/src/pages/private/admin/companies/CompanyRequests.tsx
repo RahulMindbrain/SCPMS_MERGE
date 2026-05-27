@@ -182,9 +182,15 @@ const CompanyRequests: React.FC = () => {
                 onClick={() => setFilter(opt)}
                 className={cn(
                   "flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap",
-                  filter === opt
-                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                 filter === opt
+  ? opt === 'PENDING'
+    ? "bg-amber-500 text-white shadow-lg shadow-amber-500/20"
+    : opt === 'APPROVED'
+    ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+    : opt === 'REJECTED'
+    ? "bg-rose-500 text-white shadow-lg shadow-rose-500/20"
+    : "bg-primary text-white shadow-lg shadow-primary/20"
+  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
                 id={`filter-btn-${opt.toLowerCase()}`}
               >
