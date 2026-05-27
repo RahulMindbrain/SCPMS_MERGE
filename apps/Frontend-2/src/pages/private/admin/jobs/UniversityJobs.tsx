@@ -157,7 +157,7 @@ const UniversityJobs: React.FC = () => {
               <ArrowUpDown className="size-3.5 mr-2 text-slate-400" />
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
+            <SelectContent position="popper" align="start" className="rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
               <SelectItem value="newest" className="text-[10px] font-bold uppercase tracking-widest">Newest First</SelectItem>
               <SelectItem value="oldest" className="text-[10px] font-bold uppercase tracking-widest">Oldest First</SelectItem>
             </SelectContent>
@@ -168,7 +168,7 @@ const UniversityJobs: React.FC = () => {
               <Filter className="size-3.5 mr-2 text-slate-400" />
               <SelectValue placeholder="Dept" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
+            <SelectContent position="popper" align="start" className="rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
               <SelectItem value="all" className="text-[10px] font-bold uppercase tracking-widest">All Depts</SelectItem>
               {departments.map((dept) => (
                 <SelectItem key={dept} value={dept} className="text-[10px] font-bold uppercase tracking-widest">{dept}</SelectItem>
@@ -181,7 +181,7 @@ const UniversityJobs: React.FC = () => {
               <MapPin className="size-3.5 mr-2 text-slate-400" />
               <SelectValue placeholder="Loc" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
+            <SelectContent position="popper" align="start" className="rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
               <SelectItem value="all" className="text-[10px] font-bold uppercase tracking-widest">All Locations</SelectItem>
               {locations.map(loc => (
                 <SelectItem key={loc} value={loc || 'Remote'} className="text-[10px] font-bold uppercase tracking-widest">{loc || 'Remote'}</SelectItem>

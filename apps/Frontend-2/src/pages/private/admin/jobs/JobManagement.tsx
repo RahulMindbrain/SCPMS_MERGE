@@ -295,7 +295,7 @@ const AdminJobManagement: React.FC = () => {
                 <Filter className="size-3 mr-2 text-slate-400" />
                 <SelectValue placeholder="Dept" />
               </SelectTrigger>
-              <SelectContent className="z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
+              <SelectContent position="popper" align="start" className="z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
                 <SelectItem value="all" className="text-[10px] font-bold uppercase tracking-widest">All Depts</SelectItem>
                 {departments.map((dept) => (
                   <SelectItem key={dept} value={dept} className="text-[10px] font-bold uppercase tracking-widest">{dept}</SelectItem>
@@ -308,7 +308,7 @@ const AdminJobManagement: React.FC = () => {
                 <MapPin className="size-3 mr-2 text-slate-400" />
                 <SelectValue placeholder="Loc" />
               </SelectTrigger>
-              <SelectContent className="z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
+              <SelectContent position="popper" align="start" className="z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
                 <SelectItem value="all" className="text-[10px] font-bold uppercase tracking-widest">All Locations</SelectItem>
                 {locations.map(loc => (
                   <SelectItem key={loc} value={loc || 'Remote'} className="text-[10px] font-bold uppercase tracking-widest">{loc || 'Remote'}</SelectItem>
@@ -321,7 +321,7 @@ const AdminJobManagement: React.FC = () => {
                 <Building2 className="size-3 mr-2 text-slate-400" />
                 <SelectValue placeholder="Company" />
               </SelectTrigger>
-              <SelectContent className="z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
+              <SelectContent position="popper" align="start" className="z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
                 <SelectItem value="all" className="text-[10px] font-bold uppercase tracking-widest">All Jobs</SelectItem>
                 {reduxCompanies.map((company: any) => (
                   <SelectItem key={company.id} value={company.id.toString()} className="text-[10px] font-bold uppercase tracking-widest">{company.name}</SelectItem>

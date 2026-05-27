@@ -280,7 +280,7 @@ const InterviewSchedulerPage: React.FC = () => {
             <SelectTrigger className="w-full lg:w-[220px] h-12 rounded-2xl bg-background border-border text-xs font-black uppercase tracking-widest px-5 shadow-sm">
               <SelectValue placeholder="Filter By" />
             </SelectTrigger>
-            <SelectContent className="rounded-2xl border-border shadow-2xl">
+            <SelectContent position="popper" align="start" className="rounded-2xl border-border shadow-2xl">
               <SelectItem value="all">All Registered Entities</SelectItem>
               {companies.map((company) => (
                 <SelectItem key={company.id} value={company.id.toString()}>
@@ -519,7 +519,7 @@ const InterviewSchedulerPage: React.FC = () => {
                   <SelectValue placeholder="Select University" />
                 </SelectTrigger>
                 <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-white/50 group-focus-within:text-white transition-colors" />
-                <SelectContent className="rounded-2xl border-slate-200 shadow-2xl">
+                <SelectContent position="popper" align="start" className="rounded-2xl border-slate-200 shadow-2xl">
                   <SelectItem value="all">All Universities</SelectItem>
                   {schedulerUniversities.map((uni) => (
                     <SelectItem key={uni.id} value={uni.id.toString()}>{uni.name}</SelectItem>
@@ -540,7 +540,7 @@ const InterviewSchedulerPage: React.FC = () => {
                 <SelectValue placeholder="Select Company" />
               </SelectTrigger>
               <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-white/50 group-focus-within:text-white transition-colors" />
-              <SelectContent className="rounded-2xl border-slate-200 shadow-2xl">
+              <SelectContent position="popper" align="start" className="rounded-2xl border-slate-200 shadow-2xl">
                 {companies.map((comp) => (
                   <SelectItem key={comp.id} value={comp.id.toString()}>{comp.name}</SelectItem>
                 ))}

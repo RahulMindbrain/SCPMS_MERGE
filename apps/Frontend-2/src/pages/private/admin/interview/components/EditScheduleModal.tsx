@@ -193,7 +193,7 @@ export const EditScheduleModal: React.FC<EditModalProps> = ({
               <SelectTrigger className="h-14 rounded-2xl bg-[#F8FAFC] border-slate-200/60 font-bold text-xs uppercase tracking-widest px-5 text-slate-600">
                 <SelectValue placeholder="Select Company" />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-xl">
+              <SelectContent position="popper" align="start" className="rounded-2xl border-slate-100 shadow-xl">
                 {companies.map((c) => (
                   <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
                 ))}

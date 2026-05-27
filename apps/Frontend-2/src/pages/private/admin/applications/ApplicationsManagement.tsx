@@ -218,7 +218,7 @@ const ApplicationsManagement: React.FC = () => {
                       <SelectValue placeholder="All Companies" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-border shadow-2xl p-2 min-w-[240px]">
+                  <SelectContent position="popper" align="start" className="rounded-2xl border-border shadow-2xl p-2 min-w-[240px]">
                     <SelectItem value="all" className="rounded-xl py-3 focus:bg-primary/5">
                       <span className="font-bold text-[10px] uppercase tracking-widest">All Companies</span>
                     </SelectItem>
@@ -247,7 +247,7 @@ const ApplicationsManagement: React.FC = () => {
                       <SelectValue placeholder={loading ? "Loading..." : "Select Schedule"} />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-border shadow-2xl p-2 w-[340px]">
+                  <SelectContent position="popper" align="start" className="rounded-2xl border-border shadow-2xl p-2 w-[340px]">
                     {schedules.map((s: any) => (
                       <SelectItem key={s.id} value={s.id.toString()} className="rounded-xl py-3 focus:bg-primary/5 border-b border-border/5 last:border-0 mb-1">
                         <div className="flex flex-col gap-1">
