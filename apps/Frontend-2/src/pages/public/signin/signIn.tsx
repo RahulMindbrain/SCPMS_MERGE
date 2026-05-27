@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "@/redux/thunks/loginThunk";
 import type { AppDispatch } from "@/redux/store/store";
 import type { RootState } from "@/redux/reducers/rootReducer";
-import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, ChevronLeft } from "lucide-react";
+import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { toast } from "sonner";
 import { motion } from "framer-motion";

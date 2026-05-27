@@ -7,8 +7,7 @@ import {
   Zap,
   ArrowUpRight,
   CheckCircle2,
-  ArrowRight,
-  Clock
+  ArrowRight
 } from "lucide-react";
 import { AdminPageLayout } from "@/components/layout/AdminPageLayout";
 import { PageHeader } from "@/components/PageHeader";

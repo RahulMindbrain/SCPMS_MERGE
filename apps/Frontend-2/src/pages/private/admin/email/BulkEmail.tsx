@@ -186,8 +186,7 @@ const BulkEmail: React.FC = () => {
     c.name.toLowerCase().includes(companySearchQuery.toLowerCase())
   );
 
-  // Dynamic values for summary
-  const estimatedStudentsCount = selectedJobIds.length * 125; // 125 students estimate per role
+
 
   return (
     <AdminPageLayout>
