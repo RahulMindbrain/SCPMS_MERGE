@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   MapPin,
   GraduationCap,
@@ -18,6 +18,12 @@ import Loader from '@/components/Loader';
 import { Badge } from '@/components/ui/badge';
 import { Modal } from '@/components/ui/modal';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchJobs } from '@/redux/thunks/driveThunk';
 import { fetchCompanies } from '@/redux/thunks/companyThunk';
@@ -78,10 +84,8 @@ const PlacementDriveManagement: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
   const [activeFilter, setActiveFilter] = useState('All Drives');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [expandedCompanies, setExpandedCompanies] = useState<Record<number, boolean>>({});
 
-  const filterRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const { jobs: reduxJobs, loading } = useSelector((state: RootState) => state.drive);
   const { companies } = useSelector((state: RootState) => state.company);
@@ -90,16 +94,6 @@ const PlacementDriveManagement: React.FC = () => {
     dispatch(fetchJobs({ status: 'APPROVED' }));
     dispatch(fetchCompanies({ limit: 500 }));
   }, [dispatch]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
-        setIsFilterOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const toggleCompany = (companyId: number) => {
     setExpandedCompanies(prev => ({
@@ -206,46 +200,41 @@ const PlacementDriveManagement: React.FC = () => {
             />
           </div>
 
-          <div className="relative w-full sm:w-auto" ref={filterRef}>
-            <Button
-              variant="outline"
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="w-full lg:w-auto flex items-center justify-between gap-3 h-10 rounded-xl border-border bg-background/50 text-[10px] font-black uppercase tracking-widest px-4"
-            >
-              <div className="flex items-center gap-2">
-                <Filter className="size-3.5 text-primary" />
-                {activeFilter}
-              </div>
-              <ChevronDown className={cn("size-3.5 text-muted-foreground transition-transform", isFilterOpen && "rotate-180")} />
-            </Button>
-
-            <AnimatePresence>
-              {isFilterOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute right-0 mt-2 w-52 bg-popover border border-border rounded-2xl shadow-2xl z-50 overflow-hidden p-1.5"
+          <div className="relative w-full sm:w-auto overflow-visible">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full lg:w-auto flex items-center justify-between gap-3 h-10 rounded-xl border-border bg-background/50 text-[10px] font-black uppercase tracking-widest px-4"
                 >
-                  {['All Drives', 'Active', 'Upcoming', 'Completed'].map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => {
-                        setActiveFilter(opt);
-                        setIsFilterOpen(false);
-                      }}
-                      className={cn(
-                        "w-full text-left px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-between",
-                        activeFilter === opt ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      )}
-                    >
-                      {opt}
-                      {activeFilter === opt && <div className="size-1.5 bg-current rounded-full" />}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <div className="flex items-center gap-2">
+                    <Filter className="size-3.5 text-primary" />
+                    {activeFilter}
+                  </div>
+                  <ChevronDown className="size-3.5 text-muted-foreground transition-transform" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-52 bg-popover border border-border rounded-2xl shadow-2xl p-1.5 z-[9999]">
+                {['All Drives', 'Active', 'Upcoming', 'Completed'].map((opt) => (
+                  <DropdownMenuItem
+                    key={opt}
+                    onClick={() => {
+                      setActiveFilter(opt);
+                    }}
+                    className={cn(
+                      "w-full text-left px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-between cursor-pointer focus:bg-primary focus:text-primary-foreground",
+                      activeFilter === opt
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                  >
+                    {opt}
+                    {activeFilter === opt && <div className="size-1.5 bg-current rounded-full" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </PageHeader>
