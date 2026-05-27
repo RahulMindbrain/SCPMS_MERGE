@@ -144,12 +144,26 @@ export const fetchJobsByCompanyId = createAsyncThunk(
     try {
       const res = await getAPI<any>(`/admin/get-jobs-company/${id}`, params);
 
+      // Extract jobs array safely handling nested page structures
+      const rawData = res.data?.data;
+      const jobsArray = Array.isArray(rawData)
+        ? rawData
+        : (Array.isArray(rawData?.data) ? rawData.data : []);
+
+      const meta = rawData?.meta || res.data?.meta || null;
+
+      // Place job title at top-level so UI can easily display it
+      const mappedJobs = jobsArray.map((item: any) => ({
+        ...item,
+        title: item.title || item.job?.title || "Untitled Job",
+      }));
+
       return {
-        jobs: res.data.data,
-        meta: res.data.meta,
+        jobs: mappedJobs,
+        meta,
       };
     } catch (error: any) {
-      return rejectWithValue(error?.message);
+      return rejectWithValue(error?.message || "Failed to fetch jobs by company ID");
     }
   }
 );

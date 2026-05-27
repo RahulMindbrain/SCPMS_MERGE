@@ -1,6 +1,41 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { fetchSchedules, createSchedule, updateSchedule, deleteSchedule, fetchSchedulesByCompany, fetchCompanySchedules, approveSchedule, fetchScheduleMessages, sendScheduleMessage, fetchScheduleApplications, fetchActiveCompaniesForSchedule, fetchActiveUniversitiesForSchedule, fetchCompanyJobsForSchedule, fetchUniversityJobsForSchedule, fetchCompanyInterviewSchedules, fetchApplicationsBySchedule } from "../thunks/interviewThunk";
 
+const extractJobsArray = (payload: any): any[] => {
+  if (!payload) return [];
+  // 1. If payload is Axios response (has payload.data)
+  const body = payload.data !== undefined && payload.status !== undefined ? payload.data : payload;
+  
+  // 2. If body is standard response wrapping (has body.data)
+  const innerData = body?.data !== undefined ? body.data : body;
+  
+  // 3. If innerData is paginated object (has innerData.data as array)
+  if (innerData && typeof innerData === 'object' && Array.isArray(innerData.data)) {
+    return innerData.data.map((item: any) => ({
+      ...item,
+      title: item.title || item.job?.title || "Untitled Job",
+    }));
+  }
+  
+  // 4. If innerData is directly an array
+  if (Array.isArray(innerData)) {
+    return innerData.map((item: any) => ({
+      ...item,
+      title: item.title || item.job?.title || "Untitled Job",
+    }));
+  }
+  
+  // 5. If body itself is directly an array
+  if (Array.isArray(body)) {
+    return body.map((item: any) => ({
+      ...item,
+      title: item.title || item.job?.title || "Untitled Job",
+    }));
+  }
+  
+  return [];
+};
+
 interface InterviewState {
   schedules: any[];
   applications: any[];
@@ -229,7 +264,7 @@ const interviewSlice = createSlice({
       })
       .addCase(fetchCompanyJobsForSchedule.fulfilled, (state, action: PayloadAction<any>) => {
         state.schedulerLoading = false;
-        state.schedulerJobs = action.payload?.data || [];
+        state.schedulerJobs = extractJobsArray(action.payload);
       })
       .addCase(fetchCompanyJobsForSchedule.rejected, (state) => {
         state.schedulerLoading = false;
@@ -242,7 +277,7 @@ const interviewSlice = createSlice({
       })
       .addCase(fetchUniversityJobsForSchedule.fulfilled, (state, action: PayloadAction<any>) => {
         state.schedulerLoading = false;
-        state.schedulerJobs = action.payload?.data || [];
+        state.schedulerJobs = extractJobsArray(action.payload);
       })
       .addCase(fetchUniversityJobsForSchedule.rejected, (state) => {
         state.schedulerLoading = false;
