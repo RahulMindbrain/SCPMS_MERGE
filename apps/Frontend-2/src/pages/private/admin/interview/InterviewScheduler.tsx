@@ -455,7 +455,7 @@ const InterviewSchedulerPage: React.FC = () => {
                               </div>
                               <div className="pt-4 border-t border-border flex items-center justify-between">
                                 <Badge variant="secondary" className="bg-muted text-muted-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg border-none">{ju.status}</Badge>
-                                <div className="text-[10px] font-black text-primary uppercase tracking-widest">View Specs</div>
+                                {/* <div className="text-[10px] font-black text-primary uppercase tracking-widest">View Specs</div> */}
                               </div>
                             </div>
                           )) || <div className="col-span-full py-12 text-muted-foreground font-bold text-center italic text-sm saas-card bg-muted/10 border-dashed">No openings linked to this schedule.</div>}
