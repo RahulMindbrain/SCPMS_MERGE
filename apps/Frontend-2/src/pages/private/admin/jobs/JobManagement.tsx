@@ -308,7 +308,7 @@ const AdminJobManagement: React.FC = () => {
                 <MapPin className="size-3 mr-2 text-slate-400" />
                 <SelectValue placeholder="Loc" />
               </SelectTrigger>
-              <SelectContent className=" w-[150px] h-9 rounded-xl z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
+              <SelectContent className="z-50 rounded-xl border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
                 <SelectItem value="all" className="text-[10px] font-bold uppercase tracking-widest">All Locations</SelectItem>
                 {locations.map(loc => (
                   <SelectItem key={loc} value={loc || 'Remote'} className="text-[10px] font-bold uppercase tracking-widest">{loc || 'Remote'}</SelectItem>
