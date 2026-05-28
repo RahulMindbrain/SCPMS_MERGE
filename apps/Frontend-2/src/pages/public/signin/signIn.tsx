@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "@/redux/thunks/loginThunk";
 import type { AppDispatch } from "@/redux/store/store";
@@ -20,19 +20,31 @@ const SignIn: React.FC = () => {
   
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, userType } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated) {
       const role = userType?.toLowerCase();
-      if (role === "admin") navigate("/admin/dashboard", { replace: true });
-      else if (role === "student") navigate("/student/dashboard", { replace: true });
-      else if (role === "company") navigate("/company/dashboard", { replace: true });
-      else if (role === "super_admin" || role === "superadmin") {
-        navigate("/superadmin/dashboard", { replace: true });
+      const from = (location.state as any)?.from?.pathname;
+      
+      if (from && (
+        (role === "admin" && from.startsWith("/admin")) ||
+        (role === "student" && from.startsWith("/student")) ||
+        (role === "company" && from.startsWith("/company")) ||
+        ((role === "super_admin" || role === "superadmin") && from.startsWith("/superadmin"))
+      )) {
+        navigate(from, { replace: true });
+      } else {
+        if (role === "admin") navigate("/admin/dashboard", { replace: true });
+        else if (role === "student") navigate("/student/dashboard", { replace: true });
+        else if (role === "company") navigate("/company/dashboard", { replace: true });
+        else if (role === "super_admin" || role === "superadmin") {
+          navigate("/superadmin/dashboard", { replace: true });
+        }
       }
     }
-  }, [isAuthenticated, userType, navigate]);
+  }, [isAuthenticated, userType, navigate, location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

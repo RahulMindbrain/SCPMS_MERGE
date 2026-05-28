@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "./redux/reducers/rootReducer";
+import type { AppDispatch } from "./redux/store/store";
+import { restoreSession } from "./redux/thunks/restoreSessionThunk";
 import RouteOutlet from "./routes/routeOutlet.tsx";
 import { ScrollToTop } from "./components/scroll-to-top";
 import { PublicRoutes } from "./routes/publicRoutes.ts";
@@ -10,6 +13,12 @@ import { PrivateRoutes } from "./routes/privateRoutes.ts";
 import HomePage from "./pages/public/homepage/homepage.tsx";
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(restoreSession());
+  }, [dispatch]);
+
   return (
     <>
       <ScrollToTop />

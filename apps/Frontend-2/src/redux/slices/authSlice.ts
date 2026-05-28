@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loginUser } from "../thunks/loginThunk";
+import { restoreSession } from "../thunks/restoreSessionThunk";
 import { setAuthToken } from "../../apis/api";
 
 // ─── Role-Specific User Shapes ────────────────────────────────────────────────
@@ -66,6 +67,7 @@ interface AuthState {
 
     loading: boolean;
     error: string | null;
+    isRestoringSession: boolean;
 }
 
 // ─── Helper: Persistence ───────────────────────────────────────────────────
@@ -91,6 +93,7 @@ const getInitialAuth = (): AuthState => {
                 token: token,
                 loading: false,
                 error: null,
+                isRestoringSession: true,
             };
         }
     } catch (e) {
@@ -108,6 +111,7 @@ const getInitialAuth = (): AuthState => {
         token: null,
         loading: false,
         error: null,
+        isRestoringSession: true,
     };
 };
 
@@ -130,6 +134,7 @@ const authSlice = createSlice({
             state.superAdminData = null;
             state.token = null;
             state.error = null;
+            state.isRestoringSession = false;
             // Clear token from axios default headers + localStorage
             setAuthToken(null);
             localStorage.removeItem("scpms_user");
@@ -187,6 +192,59 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.isAuthenticated = false;
                 state.error = action.payload as string;
+            })
+
+            // ── Restore Session pending ─────────────────────────────────────
+            .addCase(restoreSession.pending, (state) => {
+                state.isRestoringSession = true;
+                state.error = null;
+            })
+
+            // ── Restore Session success ─────────────────────────────────────
+            .addCase(restoreSession.fulfilled, (state, action) => {
+                const payload = action.payload;
+                const user: AdminUser | StudentUser | CompanyUser | SuperAdminUser = payload.data;
+                const token: string | undefined = payload.token;
+
+                state.isRestoringSession = false;
+                state.isAuthenticated = true;
+
+                const normalizedRole = user.role.toUpperCase() as AuthState["userType"];
+                user.role = normalizedRole as any;
+
+                state.user = user;
+                state.userType = normalizedRole;
+
+                if (normalizedRole === "ADMIN") {
+                    state.adminData = user as AdminUser;
+                } else if (normalizedRole === "STUDENT") {
+                    state.studentData = user as StudentUser;
+                } else if (normalizedRole === "COMPANY") {
+                    state.companyData = user as CompanyUser;
+                } else if (normalizedRole === "SUPER_ADMIN" || normalizedRole === "SUPERADMIN") {
+                    state.superAdminData = user as SuperAdminUser;
+                }
+
+                if (token) {
+                    state.token = token;
+                    setAuthToken(token);
+                }
+                localStorage.setItem("scpms_user", JSON.stringify(user));
+            })
+
+            // ── Restore Session failure ─────────────────────────────────────
+            .addCase(restoreSession.rejected, (state) => {
+                state.isRestoringSession = false;
+                state.isAuthenticated = false;
+                state.user = null;
+                state.userType = null;
+                state.adminData = null;
+                state.studentData = null;
+                state.companyData = null;
+                state.superAdminData = null;
+                state.token = null;
+                localStorage.removeItem("scpms_user");
+                setAuthToken(null);
             });
     },
 });

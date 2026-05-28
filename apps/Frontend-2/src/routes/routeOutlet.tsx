@@ -5,18 +5,20 @@ import type { RootState } from "@/redux/reducers/rootReducer";
 import StudentLayout from "@/components/layout/StudentLayout";
 import AdminLayout from "@/components/layout/AdminLayout";
 import CompanyLayout from "@/components/layout/CompanyLayout";
+import Loader from "@/components/Loader";
 
 const RouteOutlet: React.FC = () => {
      const location = useLocation();
-    const { isAuthenticated, userType } = useSelector(
+    const { isAuthenticated, userType, isRestoringSession } = useSelector(
         (state: RootState) => state.auth
     );
 
+  if (isRestoringSession) {
+    return <Loader fullScreen text="Loading..." />;
+  }
+
   if (!isAuthenticated) {
-    if (location.pathname.startsWith("/superadmin")) {
-      return <Navigate to="/login" replace state={{ from: location }} />;
-    }
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   // 🔥 Check route path and enforce role matching

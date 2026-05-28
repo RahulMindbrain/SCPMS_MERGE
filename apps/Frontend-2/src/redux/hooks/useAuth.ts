@@ -38,6 +38,7 @@ const useAuth = () => {
         userType: auth.userType,      // "ADMIN" | "STUDENT" | "COMPANY" | "SUPER_ADMIN" | "SUPERADMIN" | null
         loading: auth.loading,
         error: auth.error,
+        isRestoringSession: auth.isRestoringSession,
 
         // ── Convenience derived values ───────────────────────────────────────
         firstName,
