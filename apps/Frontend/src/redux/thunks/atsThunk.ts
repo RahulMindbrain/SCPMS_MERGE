@@ -47,9 +47,7 @@ export interface OptimizedResumeResult {
   }[]
 }
 
-const INTEGRATION_BASE_URL =
-  "https://scpms-merge-resume.onrender.com" || "http://localhost:5000"
-
+const INTEGRATION_BASE_URL = "https://scpms-merge-resume.onrender.com"
 export const analyzeJdMatch = createAsyncThunk(
   "ats/analyzeJdMatch",
   async (data: AtsAnalysisPayload, { rejectWithValue }) => {
