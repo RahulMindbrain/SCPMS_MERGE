@@ -230,6 +230,7 @@ export const getStudents = async (params: {
   minCgpa?: number;
   maxCgpa?: number;
   departmentId?: number;
+  universityId?: number;
 }) => {
   const { page, limit, status } = params;
 
@@ -259,6 +260,9 @@ export const getStudents = async (params: {
 
       ...(params.departmentId !== undefined && {
         departmentId: params.departmentId,
+      }),
+      ...(params.universityId !== undefined && {
+        universityId: params.universityId,
       }),
     },
   };
