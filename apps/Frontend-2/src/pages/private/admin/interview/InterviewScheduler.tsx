@@ -69,6 +69,8 @@ const InterviewSchedulerPage: React.FC = () => {
   const [schedulerType, setSchedulerType] = useState<'companies' | 'universities'>('companies');
   const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false);
   const [selectedJobToSchedule, setSelectedJobToSchedule] = useState<any>(null);
+  const [selectedJobsToSchedule, setSelectedJobsToSchedule] = useState<any[]>([]);
+  const [selectedJobIds, setSelectedJobIds] = useState<number[]>([]);
   const [finalizeData, setFinalizeData] = useState({
     title: '',
     startTime: '',
@@ -99,6 +101,8 @@ const InterviewSchedulerPage: React.FC = () => {
 
   const handleWizardCompanyChange = (id: string) => {
     setWizardCompanyId(id);
+    setSelectedJobIds([]); // Clear selection
+    setSelectedJobsToSchedule([]);
     if (id && id !== 'all') {
       dispatch(fetchCompanyJobsForSchedule(Number(id)));
       dispatch(fetchSchedules(Number(id))); // Ensure we have the schedules for this company to check against
@@ -107,7 +111,8 @@ const InterviewSchedulerPage: React.FC = () => {
 
   const handleWizardUniversityChange = (id: string) => {
     setWizardUniversityId(id);
-    // Optionally fetch companies for this university if the API supports it
+    setSelectedJobIds([]); // Clear selection
+    setSelectedJobsToSchedule([]);
   };
 
   const toggleExpand = (id: number) => {
@@ -116,12 +121,34 @@ const InterviewSchedulerPage: React.FC = () => {
 
   const handleScheduleClick = (job: any) => {
     setSelectedJobToSchedule(job);
+    setSelectedJobsToSchedule([job]);
     setFinalizeData({
       title: `${job.job?.title || 'Drive'} @ ${job.university?.name || job.job?.company?.name || 'Campus'}`,
       startTime: '',
       endTime: '',
       venue: '',
       message: ''
+    });
+    setIsFinalizeModalOpen(true);
+  };
+
+  const handleScheduleMultipleClick = () => {
+    const selectedJobs = schedulerJobs.filter((j: any) => selectedJobIds.includes(j.id));
+    if (selectedJobs.length === 0) return;
+    
+    setSelectedJobsToSchedule(selectedJobs);
+    const firstJob = selectedJobs[0];
+    
+    const titleVal = selectedJobs.length > 1 
+      ? `Combined Recruitment Drive (${selectedJobs.length} Roles) @ ${firstJob.university?.name || firstJob.job?.company?.name || 'Campus'}`
+      : `${firstJob.job?.title || 'Drive'} @ ${firstJob.university?.name || firstJob.job?.company?.name || 'Campus'}`;
+
+    setFinalizeData({
+      title: titleVal,
+      startTime: '',
+      endTime: '',
+      venue: '',
+      message: `Recruitment drive for the following roles:\n${selectedJobs.map((j: any) => `- ${j.job?.title} (${j.job?.eligibleDepartments?.map((d: any) => d.name).join(', ') || 'All Depts'})`).join('\n')}`
     });
     setIsFinalizeModalOpen(true);
   };
@@ -134,11 +161,18 @@ const InterviewSchedulerPage: React.FC = () => {
 
     setIsSubmittingSchedule(true);
     try {
+      const jobsToUse = selectedJobsToSchedule.length > 0 
+        ? selectedJobsToSchedule 
+        : [selectedJobToSchedule];
+      
+      const firstJob = jobsToUse[0];
+      const jobUniversityIds = jobsToUse.map((j: any) => j.id);
+
       const payload = {
         title: finalizeData.title,
-        companyId: selectedJobToSchedule.job.companyId,
-        universityId: selectedJobToSchedule.universityId,
-        jobUniversityIds: [selectedJobToSchedule.id],
+        companyId: firstJob.job.companyId,
+        universityId: firstJob.universityId,
+        jobUniversityIds: jobUniversityIds,
         startTime: new Date(finalizeData.startTime).toISOString(),
         endTime: new Date(finalizeData.endTime).toISOString(),
         venue: finalizeData.venue
@@ -153,7 +187,9 @@ const InterviewSchedulerPage: React.FC = () => {
       toast.success("Interview scheduled successfully!");
       setIsFinalizeModalOpen(false);
       setIsWizardOpen(false);
-      // Refresh schedules if needed
+      setSelectedJobIds([]); // Clear selection
+      setSelectedJobsToSchedule([]);
+      
       if (selectedCompanyId) {
         dispatch(fetchSchedules(Number(selectedCompanyId)));
       }
@@ -489,17 +525,18 @@ const InterviewSchedulerPage: React.FC = () => {
     </div>
 
       {/* Consolidated Schedule Wizard Modal */}
-      {/* Consolidated Schedule Wizard Modal */}
 <Modal
   isOpen={isWizardOpen}
   onClose={() => {
     setIsWizardOpen(false);
     setWizardCompanyId('');
     setWizardUniversityId('');
+    setSelectedJobIds([]);
+    setSelectedJobsToSchedule([]);
   }}
   title="Campus Drive Scheduler"
   subtitle="Initiate and configure new recruitment timelines"
-  maxWidth="max-w-5xl"
+  maxWidth="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl"
 >
   <div className="space-y-10 py-2">
     {/* Step 1: Configuration Header */}
@@ -556,12 +593,35 @@ const InterviewSchedulerPage: React.FC = () => {
         <div className="space-y-1">
           <h3 className="text-xl font-black text-slate-900 tracking-tight">Approved Openings</h3>
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-            <div className="size-1.5 rounded-full bg-emerald-500" />
+            <span className="size-1.5 rounded-full bg-emerald-500" />
             Ready for Scheduling
           </p>
         </div>
-        <div className="bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
-           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Found: {schedulerJobs.length}</span>
+        <div className="flex items-center gap-4">
+          {schedulerJobs.filter(j => !schedules.some((s: any) => s.jobUniversities?.some((ju: any) => ju.id === j.id || ju.job?.id === j.job?.id))).length > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                const unscheduledJobs = schedulerJobs.filter(j => !schedules.some((s: any) => s.jobUniversities?.some((ju: any) => ju.id === j.id || ju.job?.id === j.job?.id)));
+                const allSelected = unscheduledJobs.every(j => selectedJobIds.includes(j.id));
+                if (allSelected) {
+                  setSelectedJobIds(selectedJobIds.filter(id => !unscheduledJobs.some(j => j.id === id)));
+                } else {
+                  const newIds = Array.from(new Set([...selectedJobIds, ...unscheduledJobs.map(j => j.id)]));
+                  setSelectedJobIds(newIds);
+                }
+              }}
+              className="rounded-xl border-slate-200 font-bold text-xs uppercase tracking-widest h-10 px-4 flex items-center gap-2"
+            >
+              {schedulerJobs.filter(j => !schedules.some((s: any) => s.jobUniversities?.some((ju: any) => ju.id === j.id || ju.job?.id === j.job?.id))).every(j => selectedJobIds.includes(j.id))
+                ? "Deselect All"
+                : "Select All"
+              }
+            </Button>
+          )}
+          <div className="bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Found: {schedulerJobs.length}</span>
+          </div>
         </div>
       </div>
     )}
@@ -604,7 +664,16 @@ const InterviewSchedulerPage: React.FC = () => {
               </h4>
               <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Ready for scheduling</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex items-center gap-4">
+              {selectedJobIds.length > 0 && (
+                <Button
+                  onClick={handleScheduleMultipleClick}
+                  className="bg-primary hover:bg-[#0045FF] text-white rounded-2xl h-12 px-6 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+                >
+                  <Calendar size={15} />
+                  Schedule Selected ({selectedJobIds.length})
+                </Button>
+              )}
               <div className="bg-white rounded-2xl py-3 px-5 border border-slate-200 shadow-sm text-center min-w-[90px]">
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mb-0.5">Approved</p>
                 <p className="text-lg font-black text-emerald-600 leading-none">{schedulerJobs.filter(j => j.status === 'APPROVED').length}</p>
@@ -614,75 +683,94 @@ const InterviewSchedulerPage: React.FC = () => {
 
           {/* Jobs Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[50vh] overflow-y-auto pr-3 custom-scrollbar py-2">
-            {schedulerJobs.map((ju: any) => (
-              <motion.div
-                key={ju.id}
-                whileHover={{ y: -4 }}
-                className="group relative bg-white border border-slate-200 hover:border-primary/40 p-6 rounded-[2.5rem] transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-primary/5 flex flex-col"
-              >
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-4 min-w-0">
-                    <div className="size-14 shrink-0 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-xl shadow-lg group-hover:bg-primary transition-colors">
-                      {ju.job?.title?.[0] || 'J'}
-                    </div>
-                    <div className="min-w-0">
-                      <h5 className="font-black text-slate-900 text-lg leading-none tracking-tight truncate">{ju.job?.title}</h5>
-                      <p className="text-[10px] font-black text-primary/60 uppercase tracking-widest mt-1 truncate">{ju.university?.name || "Global"}</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-emerald-50 text-emerald-600 border-emerald-100 text-[8px] font-black uppercase px-3 py-1 shrink-0">
-                    {ju.status}
-                  </Badge>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {(ju.job?.eligibleDepartments || []).slice(0, 2).map((dept: any) => (
-                    <Badge key={dept.id} variant="secondary" className="bg-slate-50 text-slate-500 border-slate-100 text-[8px] font-black uppercase px-3 py-1 tracking-widest whitespace-normal h-auto text-left leading-tight break-words max-w-full">
-                      {dept.name || `Dept #${dept.id}`}
-                    </Badge>
-                  ))}
-                  {(ju.job?.eligibleDepartments || []).length > 2 && (
-                    <Badge variant="secondary" className="bg-slate-50 text-slate-400 border-slate-100 text-[8px] font-black uppercase px-3 py-1">
-                      +{(ju.job?.eligibleDepartments || []).length - 2}
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50/50 rounded-3xl border border-slate-100 mb-6">
-                  <div>
-                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Package</p>
-                    <p className="text-sm font-black text-emerald-600">₹{(ju.salary / 100000).toFixed(1)} LPA</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Vacancies</p>
-                    <p className="text-sm font-black text-slate-900">{ju.openings} Seats</p>
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={() => handleScheduleClick(ju)}
-                  disabled={schedules.some((s: any) => s.jobUniversities?.some((j: any) => j.id === ju.id || j.job?.id === ju.job?.id))}
-                  className={cn(
-                    "mt-auto w-full rounded-2xl h-12 font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3",
-                    schedules.some((s: any) => s.jobUniversities?.some((j: any) => j.id === ju.id || j.job?.id === ju.job?.id))
-                      ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                      : "bg-slate-900 hover:bg-primary text-white shadow-lg shadow-slate-900/10 hover:shadow-primary/20"
-                  )}
+            {schedulerJobs.map((ju: any) => {
+              const isAlreadyScheduled = schedules.some((s: any) => s.jobUniversities?.some((j: any) => j.id === ju.id || j.job?.id === ju.job?.id));
+              
+              return (
+                <motion.div
+                  key={ju.id}
+                  whileHover={{ y: -4 }}
+                  className="group relative bg-white border border-slate-200 hover:border-primary/40 p-6 rounded-[2.5rem] transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-primary/5 flex flex-col"
                 >
-                  {schedules.some((s: any) => s.jobUniversities?.some((j: any) => j.id === ju.id || j.job?.id === ju.job?.id)) ? (
-                    <>
-                      <CheckCircle2 size={16} />
-                      Scheduled
-                    </>
-                  ) : (
-                    <>
-                      <Calendar size={16} />
-                      Launch Drive
-                    </>
-                  )}
-                </Button>
-              </motion.div>
-            ))}
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex items-center gap-4 min-w-0">
+                      {!isAlreadyScheduled && (
+                        <input
+                          type="checkbox"
+                          checked={selectedJobIds.includes(ju.id)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            if (selectedJobIds.includes(ju.id)) {
+                              setSelectedJobIds(selectedJobIds.filter(id => id !== ju.id));
+                            } else {
+                              setSelectedJobIds([...selectedJobIds, ju.id]);
+                            }
+                          }}
+                          className="size-5 rounded border-slate-300 text-primary focus:ring-primary cursor-pointer shrink-0"
+                        />
+                      )}
+                      <div className="size-14 shrink-0 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-xl shadow-lg group-hover:bg-primary transition-colors">
+                        {ju.job?.title?.[0] || 'J'}
+                      </div>
+                      <div className="min-w-0">
+                        <h5 className="font-black text-slate-900 text-lg leading-none tracking-tight truncate">{ju.job?.title}</h5>
+                        <p className="text-[10px] font-black text-primary/60 uppercase tracking-widest mt-1 truncate">{ju.university?.name || "Global"}</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-emerald-50 text-emerald-600 border-emerald-100 text-[8px] font-black uppercase px-3 py-1 shrink-0">
+                      {ju.status}
+                    </Badge>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {(ju.job?.eligibleDepartments || []).slice(0, 2).map((dept: any) => (
+                      <Badge key={dept.id} variant="secondary" className="bg-slate-50 text-slate-500 border-slate-100 text-[8px] font-black uppercase px-3 py-1 tracking-widest whitespace-normal h-auto text-left leading-tight break-words max-w-full">
+                        {dept.name || `Dept #${dept.id}`}
+                      </Badge>
+                    ))}
+                    {(ju.job?.eligibleDepartments || []).length > 2 && (
+                      <Badge variant="secondary" className="bg-slate-50 text-slate-400 border-slate-100 text-[8px] font-black uppercase px-3 py-1">
+                        +{(ju.job?.eligibleDepartments || []).length - 2}
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50/50 rounded-3xl border border-slate-100 mb-6">
+                    <div>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Package</p>
+                      <p className="text-sm font-black text-emerald-600">₹{(ju.salary / 100000).toFixed(1)} LPA</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Vacancies</p>
+                      <p className="text-sm font-black text-slate-900">{ju.openings} Seats</p>
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={() => handleScheduleClick(ju)}
+                    disabled={isAlreadyScheduled}
+                    className={cn(
+                      "mt-auto w-full rounded-2xl h-12 font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3",
+                      isAlreadyScheduled
+                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                        : "bg-slate-900 hover:bg-primary text-white shadow-lg shadow-slate-900/10 hover:shadow-primary/20"
+                    )}
+                  >
+                    {isAlreadyScheduled ? (
+                      <>
+                        <CheckCircle2 size={16} />
+                        Scheduled
+                      </>
+                    ) : (
+                      <>
+                        <Calendar size={16} />
+                        Launch Drive
+                      </>
+                    )}
+                  </Button>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       ) : (
@@ -701,7 +789,6 @@ const InterviewSchedulerPage: React.FC = () => {
 
 
       {/* Finalize Schedule Modal */}
-      {/* Finalize Schedule Modal */}
 <Modal
   isOpen={isFinalizeModalOpen}
   onClose={() => setIsFinalizeModalOpen(false)}
@@ -711,21 +798,37 @@ const InterviewSchedulerPage: React.FC = () => {
 >
   <div className="space-y-8 py-2">
     {/* Selection Summary Card */}
-    {selectedJobToSchedule && (
-      <div className="relative overflow-hidden bg-primary/[0.03] border border-primary/10 rounded-3xl p-6 flex items-center gap-5">
-        <div className="size-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center shrink-0">
-          <Briefcase className="size-7 text-primary" />
+    {selectedJobsToSchedule.length > 0 && (
+      <div className="relative overflow-hidden bg-primary/[0.03] border border-primary/10 rounded-3xl p-6 space-y-4">
+        <div className="flex items-center gap-5">
+          <div className="size-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center shrink-0">
+            <Briefcase className="size-7 text-primary" />
+          </div>
+          <div className="min-w-0">
+            <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight truncate">
+              {selectedJobsToSchedule.length === 1 
+                ? selectedJobsToSchedule[0].job?.title 
+                : `${selectedJobsToSchedule.length} Selected Roles`
+              }
+            </h4>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5 mt-0.5">
+              <Building2 size={12} className="text-primary/60" />
+              {selectedJobsToSchedule[0].university?.name || "Global Selection"}
+            </p>
+          </div>
         </div>
-        <div className="min-w-0">
-          <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight truncate">
-            {selectedJobToSchedule.job?.title}
-          </h4>
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5 mt-0.5">
-            <Building2 size={12} className="text-primary/60" />
-            {selectedJobToSchedule.university?.name || "Global Selection"}
-          </p>
-        </div>
-        <div className="absolute -right-4 -top-4 size-24 bg-primary/5 rounded-full blur-2xl" />
+        {selectedJobsToSchedule.length > 1 && (
+          <div className="text-[11px] bg-white/50 border border-slate-200 p-3 rounded-xl max-h-[120px] overflow-y-auto space-y-1.5 custom-scrollbar">
+            <p className="font-bold text-slate-500 uppercase text-[9px] tracking-widest">Included Positions:</p>
+            {selectedJobsToSchedule.map((j: any) => (
+              <div key={j.id} className="flex justify-between items-center text-slate-700">
+                <span className="font-semibold truncate max-w-[70%]">{j.job?.title}</span>
+                <span className="text-[9px] text-emerald-600 font-extrabold uppercase bg-emerald-50 px-1.5 py-0.5 rounded">₹{(j.salary / 100000).toFixed(1)} LPA</span>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="absolute -right-4 -top-4 size-24 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
       </div>
     )}
 
