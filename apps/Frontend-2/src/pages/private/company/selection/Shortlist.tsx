@@ -89,7 +89,7 @@ const Shortlist: React.FC = () => {
               <span>Talent Pool</span>
             </div>
             <h1 className="hero-title">
-              Shortlisted <span>Candidates</span> 🎯
+              Shortlisted <span>Candidates</span> 
             </h1>
             <p className="hero-description text-white/70">
               Review and manage high-potential students who have advanced to the next stages of your recruitment drive.
@@ -145,7 +145,8 @@ const Shortlist: React.FC = () => {
             className="w-full pl-12 pr-4 py-3 bg-background/50 hover:bg-background/80 focus:bg-background border border-border/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium text-sm shadow-xs"
           />
         </div>
-      </div>      {/* Candidate Table Container */}
+      </div>
+      {/* Candidate Table Container */}
       {loading ? (
         <div className="py-32 flex flex-col items-center justify-center bg-card rounded-[3rem] border border-dashed border-border">
           <div className="relative mb-6">

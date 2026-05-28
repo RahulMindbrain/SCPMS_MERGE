@@ -133,7 +133,7 @@ const Eligibility = () => {
                 <span>Eligibility Monitor</span>
               </div>
               <h1 className="student-hero-title">
-                Placement <span>Eligibility</span> ✅
+                Placement <span>Eligibility</span> 
               </h1>
               <p className="student-hero-description">
                 {stats.eligible > 0 

@@ -177,7 +177,7 @@ export default function StudentDashboard() {
             </div>
 
             <h1 className="student-hero-title">
-              Welcome back, <span className="bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-300 dark:to-sky-300 bg-clip-text text-transparent">{user?.firstname || "Student"}</span> ✨
+              Welcome back, <span className="bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-300 dark:to-sky-300 bg-clip-text text-transparent">{user?.firstname || "Student"}</span> 
             </h1>
 
             <p className="student-hero-description">

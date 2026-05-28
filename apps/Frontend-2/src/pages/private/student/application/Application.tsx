@@ -664,7 +664,7 @@ const ApplicationStatus = () => {
                 <span>Application Command</span>
               </div>
               <h1 className="student-hero-title">
-                Track Your <span>Mission Progress</span> 🚀
+                Track Your <span>Mission Progress</span> 
               </h1>
               <p className="student-hero-description">
                 Monitor your job applications, interview stages, and feedback in real-time. Your career journey, organized.
