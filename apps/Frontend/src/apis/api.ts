@@ -1,10 +1,10 @@
 import axios, { type AxiosRequestConfig, type AxiosError } from "axios"
 
 // ─── Base Configuration ───────────────────────────────────────────────────────
-const BASE_URL = "http://localhost:3030";
+const BASE_URL = "https://scpms-merge-scpms.onrender.com"
+// const BASE_URL = "http://localhost:3030";
 // const BASE_URL = "https://scpms.onrender.com"
 // const BASE_URL = "https://scpms-production.up.railway.app"
-
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -42,17 +42,19 @@ if (_persistedToken) {
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error?.config as (AxiosRequestConfig & {
-      _retry?: boolean
-    }) | undefined;
+    const originalRequest = error?.config as
+      | (AxiosRequestConfig & {
+          _retry?: boolean
+        })
+      | undefined
 
     if (!originalRequest) {
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
 
     const isAuthLoginRequest =
       originalRequest.url === "/auth/login" ||
-      originalRequest.url?.endsWith("/auth/login");
+      originalRequest.url?.endsWith("/auth/login")
 
     // If the error is 401 and it's not a retry and not an auth endpoint
     if (
