@@ -34,7 +34,7 @@ const profileSchema = z.object({
     activeBacklogs: z.preprocess((val) => (val === "" ? undefined : val), z.coerce.number().min(0, "Cannot be negative").default(0)),
     university: z.string().optional(),
   }),
-  resumeUrl: z.string().url("Invalid Resume URL").or(z.literal("")).nullable(),
+  resumeUrl: z.string("Please upload your resume first").url("Please upload your resume first"),
 });
 
 type SkillOption = {

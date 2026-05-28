@@ -181,6 +181,17 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({
               </ul>
             </div>
           )}
+
+          {!profile?.resumeUrl && (
+            <div className="p-3 bg-amber-50/60 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl">
+              <p className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                <AlertTriangle size={11} className="text-amber-500" /> Missing Resume
+              </p>
+              <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                You must upload a resume in your profile before you can apply for jobs.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Required Skills */}
@@ -217,12 +228,14 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({
                 ? "bg-emerald-500/10 dark:bg-emerald-500/20 border-emerald-500/20 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 cursor-not-allowed shadow-none"
                 : !isApproved 
                 ? "bg-amber-500/10 text-amber-600 border-amber-500/20 cursor-not-allowed shadow-none"
+                : !profile?.resumeUrl
+                ? "bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-none hover:bg-amber-500/20"
                 : !eligibility.eligible
                 ? "bg-rose-500/10 text-rose-500 border-rose-500/20 cursor-not-allowed shadow-none"
                 : "bg-indigo-600 hover:bg-indigo-700 text-white border-transparent shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:scale-[1.01] active:scale-[0.99]"
             )}
             onClick={handleApply}
-            disabled={isApplying || isApplied || !eligibility.eligible || !isApproved}
+            disabled={isApplying || isApplied || !isApproved || (!profile?.resumeUrl ? false : !eligibility.eligible)}
           >
             {isApplying ? (
               <Loader size="sm" />
@@ -233,6 +246,8 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({
               </span>
             ) : !isApproved ? (
               'Account Pending Approval'
+            ) : !profile?.resumeUrl ? (
+              'Upload Resume to Apply'
             ) : !eligibility.eligible ? (
               'Not Eligible to Apply'
             ) : (

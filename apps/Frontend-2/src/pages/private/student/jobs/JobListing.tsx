@@ -316,6 +316,13 @@ const JobListing = () => {
   const handleApply = async (skipOpt: boolean | any = false) => {
     if (!selectedJob) return;
 
+    if (!profile?.resumeUrl) {
+      toast.error("Please upload your resume in your profile before applying.", {
+        description: "You must have a resume uploaded to your profile to apply for jobs."
+      });
+      return;
+    }
+
     setIsApplying(true);
     const toastId = toast.loading(`Submitting application for ${selectedJob.job.title}...`);
 
@@ -464,6 +471,12 @@ const JobListing = () => {
                     setIsDetailsModalOpen(true);
                   }}
                   onOpenApply={() => {
+                    if (!profile?.resumeUrl) {
+                      toast.error("Please upload your resume in your profile before applying.", {
+                        description: "You must have a resume uploaded to your profile to apply for jobs."
+                      });
+                      return;
+                    }
                     setSelectedJob(job);
                     setIsApplyModalOpen(true);
                   }}
