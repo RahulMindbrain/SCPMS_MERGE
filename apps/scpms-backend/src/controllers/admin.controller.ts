@@ -55,6 +55,8 @@ export const registerAdminController = async (req: Request, res: Response) => {
 
 export const getStudentsController = async (req: Request, res: Response) => {
   try {
+    const user = res.locals.user;
+
     const {
       page,
       limit,
@@ -63,6 +65,7 @@ export const getStudentsController = async (req: Request, res: Response) => {
       minCgpa,
       maxCgpa,
       departmentId,
+      universityId,
       status,
     } = req.query;
 
@@ -88,6 +91,9 @@ export const getStudentsController = async (req: Request, res: Response) => {
       ...(parsedLimit !== undefined && { limit: parsedLimit }),
       ...(parseNumber(passingYear) !== undefined && {
         passingYear: parseNumber(passingYear),
+        ...(parseNumber(universityId) !== undefined && {
+          universityId: parseNumber(universityId),
+        }),
       }),
       ...(parseNumber(year) !== undefined && {
         year: parseNumber(year),
@@ -104,7 +110,7 @@ export const getStudentsController = async (req: Request, res: Response) => {
       ...(status && { status }),
     };
 
-    const students = await getStudentsService(params);
+    const students = await getStudentsService(params, user);
 
     return sendSuccess(res, 200, "Students fetched", students);
   } catch (error: any) {

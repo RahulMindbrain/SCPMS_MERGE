@@ -4,6 +4,9 @@
 # Ignore PDF files
 *.pdf
 
+#ignore zip
+*.zip
+
 # Ignore environment files
 .env
 .env.*

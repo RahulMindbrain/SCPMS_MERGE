@@ -29,6 +29,7 @@ app.use(
       "https://7132f00b.scpms.pages.dev",
       "https://scpms-2.pages.dev",
       "https://scpms.pages.dev",
+      "https://scpms-merge.pages.dev",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,

@@ -27,6 +27,7 @@ import {
   // getInactiveStudents,
   getInactiveStudentUsers,
   getSalaryDataRepo,
+  getStudentByUserId,
   getTotalPlacedStudentsRepo,
 } from "../repository/student.repository";
 import { sendSuccess } from "../utils/response";
@@ -105,17 +106,40 @@ export const registerAdminService = async (data: {
   });
 };
 
-export const getStudentsService = async (params: {
-  page?: number;
-  limit?: number;
-  passingYear?: number;
-  year?: number;
-  minCgpa?: number;
-  maxCgpa?: number;
-  departmentId?: number;
-  status?: "ACTIVE" | "INACTIVE";
-}) => {
+export const getStudentsService = async (
+  params: {
+    page?: number;
+    limit?: number;
+    passingYear?: number;
+    year?: number;
+    minCgpa?: number;
+    maxCgpa?: number;
+    departmentId?: number;
+    status?: "ACTIVE" | "INACTIVE";
+    universityId?: number;
+  },
+  user?: any,
+) => {
+  if (user?.role === "ADMIN") {
+    const admin = await getUniversityByAdminId(user.id);
+
+    if (!admin?.university?.id) {
+      throw new Error("Admin not linked to university");
+    }
+
+    params.universityId = admin.university.id;
+  } else if (user?.role === "STUDENT") {
+    const student = await getStudentByUserId(user.id);
+
+    if (!student?.university.id) {
+      throw new Error("Student not linked to university");
+    }
+
+    params.universityId = student.university.id;
+  }
+
   const DEFAULT_LIMIT = parseInt(process.env.DEFAULT_PAGE_LIMIT || "10", 10);
+
   const MAX_LIMIT = 50;
 
   let finalLimit = params.limit ?? DEFAULT_LIMIT;
