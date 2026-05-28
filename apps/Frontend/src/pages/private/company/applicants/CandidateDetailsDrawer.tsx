@@ -8,7 +8,9 @@ import {
   Building2, 
   Sparkles, 
   CheckCircle2, 
-  XCircle 
+  XCircle,
+  ExternalLink,
+  FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -32,7 +34,9 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
   onClose,
   selectedCandidate,
   openUpdateModal,
+  openResume,
   getAvatarGradient,
+  formatStage,
 }) => {
   if (!selectedCandidate) return null;
   
@@ -53,14 +57,14 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
           <div className="flex items-center justify-between p-6 border-b border-border/40 relative z-10 bg-background/50 backdrop-blur-md shrink-0">
             <div className="flex items-center gap-2">
               <Award size={16} className="text-primary" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-primary">Candidate Dossier</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-primary">Candidate Dossier</span>
             </div>
           
-  <button onClick={onClose}>
+  <button onClick={onClose} className="p-1.5 hover:bg-muted/10 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer">
     <X size={18} />
   </button>
           </div>
-
+ 
           {/* Scrollable Dossier Contents */}
           <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8 text-left">
             
@@ -70,14 +74,14 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
               
               <div className="relative mb-4">
                 <Avatar size="lg" className="size-20 border-4 border-background shadow-xl">
-                  <AvatarFallback className={`bg-gradient-to-tr ${gradient} text-2xl font-black`}>
+                  <AvatarFallback className={`bg-gradient-to-tr ${gradient} text-2xl font-bold`}>
                     {initials}
                   </AvatarFallback>
                 </Avatar>
               </div>
 
-              <h3 className="text-xl font-black text-foreground tracking-tight">{studentName}</h3>
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">
+              <h3 className="text-xl font-extrabold text-foreground tracking-tight">{studentName}</h3>
+              <p className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mt-1">
                 {app.student?.department?.name || 'Department N/A'}
               </p>
 
@@ -93,7 +97,7 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                       navigator.clipboard.writeText(app.student?.user?.email || '');
                       toast.success("Email copied successfully!");
                     }}
-                    className="text-[9px] font-black text-primary uppercase tracking-widest hover:underline shrink-0 cursor-pointer"
+                    className="text-xs font-bold text-primary uppercase tracking-wider hover:underline shrink-0 cursor-pointer"
                   >
                     Copy
                   </button>
@@ -109,7 +113,7 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                         navigator.clipboard.writeText(app.student?.user?.phone || '');
                         toast.success("Phone copied successfully!");
                       }}
-                      className="text-[9px] font-black text-primary uppercase tracking-widest hover:underline shrink-0 cursor-pointer"
+                      className="text-xs font-bold text-primary uppercase tracking-wider hover:underline shrink-0 cursor-pointer"
                     >
                       Copy
                     </button>
@@ -120,15 +124,15 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
 
             {/* Academic Stats Dashboard */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Academic Performance</h4>
+              <h4 className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider ml-1">Academic Performance</h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-card border border-border/80 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Verified CGPA</span>
-                  <span className="text-2xl font-black text-violet-600 mt-2">{app.student?.cgpa || 'N/A'} <span className="text-xs font-bold text-muted-foreground">/ 10</span></span>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Verified CGPA</span>
+                  <span className="text-2xl font-extrabold text-violet-650 mt-2">{app.student?.cgpa || 'N/A'} <span className="text-xs font-semibold text-muted-foreground">/ 10</span></span>
                 </div>
                 <div className="bg-card border border-border/80 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Active Backlogs</span>
-                  <span className={`text-2xl font-black mt-2 ${app.student?.activeBacklogs > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Active Backlogs</span>
+                  <span className={`text-2xl font-extrabold mt-2 ${app.student?.activeBacklogs > 0 ? 'text-rose-605' : 'text-emerald-650'}`}>
                     {app.student?.activeBacklogs ?? 'N/A'}
                   </span>
                 </div>
@@ -137,15 +141,15 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
 
             {/* Drive Placement Context */}
             <div className="bg-card border border-border/80 rounded-3xl p-5 space-y-4 shadow-sm">
-              <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Drive Details</h4>
+              <h4 className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider ml-1">Drive Details</h4>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-emerald-500/10 text-emerald-600 rounded-xl mt-0.5 shrink-0">
                     <Briefcase size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Job Applied For</p>
-                    <p className="text-sm font-black text-foreground">{app.jobUniversity?.job?.title || 'N/A'}</p>
+                    <p className="text-xs font-semibold text-muted-foreground tracking-wider">Job Applied For</p>
+                    <p className="text-sm font-bold text-foreground">{app.jobUniversity?.job?.title || 'N/A'}</p>
                   </div>
                 </div>
 
@@ -154,45 +158,50 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                     <Building2 size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Hiring Campus Location</p>
-                    <p className="text-sm font-black text-foreground">{app.jobUniversity?.university?.name || 'Global Drive Platform'}</p>
+                    <p className="text-xs font-semibold text-muted-foreground tracking-wider">Hiring Campus Location</p>
+                    <p className="text-sm font-bold text-foreground">{app.jobUniversity?.university?.name || 'Global Drive Platform'}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Resume dossier */}
-            {/* <div className="space-y-3">
-              <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Documents & Verification</h4>
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider ml-1">Documents & Verification</h4>
               <div className="bg-card border border-border/80 rounded-3xl p-4 flex items-center justify-between shadow-xs">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-rose-500/10 text-rose-500 rounded-2xl">
-                    <Download size={18} />
+                    <FileText size={18} />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs font-black text-foreground tracking-tight">Candidate Resume dossier</p>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Verified PDF Attachment</p>
+                    <p className="text-sm font-bold text-foreground tracking-tight">Candidate Resume dossier</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Verified PDF Attachment</p>
                   </div>
                 </div>
                 <button
                   onClick={() => openResume(app.student?.resumeUrl, studentName)}
                   className="p-3 bg-muted/10 hover:bg-muted/20 text-muted-foreground hover:text-foreground rounded-2xl transition-all cursor-pointer border border-border/45"
+                  title="Open Resume"
                 >
                   <ExternalLink size={15} />
                 </button>
               </div>
-            </div> */}
+            </div>
 
             {/* Process Timeline History */}
-            {/* <div className="space-y-3">
-              <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">recruitment Pipeline history</h4>
-              
-              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm relative">
-                <span className="absolute top-6 right-6 text-[8px] font-black text-muted-foreground uppercase tracking-widest bg-muted px-2 py-0.5 rounded">
-                  Stage: {app.status}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between ml-1 flex-wrap gap-2">
+                <h4 className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Recruitment Pipeline History</h4>
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 bg-muted px-2.5 py-1 rounded-lg border border-border/30">
+                  Stage: {formatStage(app.status, app.currentRound)}
                 </span>
-                
-                <div className="relative pl-5 border-l border-border/60 space-y-6 text-left ml-2">
+              </div>
+              
+              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm relative overflow-hidden">
+                <div className="relative pl-6 text-left space-y-6">
+                  {/* Perfect, smooth absolute timeline line */}
+                  <div className="absolute left-[11px] top-2.5 bottom-2.5 w-0.5 bg-gradient-to-b from-primary/30 via-violet-500/25 to-zinc-100 dark:to-zinc-800/40" />
+
                   {app.history && app.history.length > 0 ? (
                     app.history.map((hist: any, idx: number) => {
                       const isSelect = hist.status === 'SELECTED' || hist.status === 'OFFER_ACCEPTED';
@@ -200,13 +209,13 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                       const isShortlist = hist.status === 'SHORTLISTED';
                       return (
                         <div key={hist.id || idx} className="relative">
-                          <div className={`absolute -left-[29px] top-0.5 w-4.5 h-4.5 rounded-full border-2 bg-background flex items-center justify-center shadow-xs
-                            ${isSelect ? 'border-emerald-500 text-emerald-500 ring-4 ring-emerald-500/10' :
-                              isReject ? 'border-rose-500 text-rose-500 ring-4 ring-rose-500/10' :
-                              isShortlist ? 'border-violet-500 text-violet-500 ring-4 ring-violet-500/10' :
-                              'border-primary text-primary ring-4 ring-primary/10'}`}
+                          <div className={`absolute left-[11px] -translate-x-1/2 top-1.5 w-6 h-6 rounded-full border-2 bg-background flex items-center justify-center shadow-xs transition-all duration-300
+                            ${isSelect ? 'border-emerald-500 text-emerald-500 ring-4 ring-emerald-500/10 shadow-[0_0_8px_rgba(16,185,129,0.15)]' :
+                              isReject ? 'border-rose-500 text-rose-500 ring-4 ring-rose-500/10 shadow-[0_0_8px_rgba(244,63,94,0.15)]' :
+                              isShortlist ? 'border-violet-500 text-violet-500 ring-4 ring-violet-500/10 shadow-[0_0_8px_rgba(139,92,246,0.15)]' :
+                              'border-primary text-primary ring-4 ring-primary/10 shadow-[0_0_8px_rgba(var(--primary),0.15)]'}`}
                           >
-                            <div className={`w-1.5 h-1.5 rounded-full 
+                            <div className={`w-2 h-2 rounded-full 
                               ${isSelect ? 'bg-emerald-500' :
                                 isReject ? 'bg-rose-500' :
                                 isShortlist ? 'bg-violet-500' :
@@ -214,22 +223,22 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                             />
                           </div>
 
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className={`text-[10px] font-black uppercase tracking-wider
-                                ${isSelect ? 'text-emerald-600' :
-                                  isReject ? 'text-rose-600' :
-                                  isShortlist ? 'text-violet-600' :
+                          <div className="pl-8 space-y-1">
+                            <div className="flex items-center gap-2.5 flex-wrap">
+                              <span className={`text-xs font-bold uppercase tracking-wider
+                                ${isSelect ? 'text-emerald-600 dark:text-emerald-400' :
+                                  isReject ? 'text-rose-600 dark:text-rose-400' :
+                                  isShortlist ? 'text-violet-600 dark:text-violet-400' :
                                   'text-primary'}`}
                               >
                                 {formatStage(hist.status, hist.round)}
                               </span>
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest font-mono bg-muted/40 px-1.5 py-0.5 rounded">
-                                {new Date(hist.createdAt).toLocaleString()}
+                              <span className="text-xs text-muted-foreground font-semibold">
+                                {new Date(hist.createdAt).toLocaleDateString()} at {new Date(hist.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </div>
                             {hist.reason && (
-                              <p className="text-xs font-medium text-muted-foreground/80 pl-2 border-l border-border italic bg-muted/5 py-1 px-3 rounded-lg max-w-sm">
+                              <p className="text-xs font-medium text-zinc-650 dark:text-zinc-350 bg-zinc-50 dark:bg-zinc-900/60 py-1.5 px-3 rounded-xl border border-border/30 max-w-md inline-block">
                                 "{hist.reason}"
                               </p>
                             )}
@@ -239,17 +248,17 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                     })
                   ) : (
                     <div className="relative">
-                      <div className="absolute -left-[29px] top-0.5 w-4.5 h-4.5 rounded-full border-2 border-primary bg-background flex items-center justify-center shadow-xs ring-4 ring-primary/10">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <div className="absolute left-[11px] -translate-x-1/2 top-1.5 w-6 h-6 rounded-full border-2 border-primary bg-background flex items-center justify-center shadow-xs ring-4 ring-primary/10 shadow-[0_0_8px_rgba(var(--primary),0.15)]">
+                        <div className="w-2 h-2 rounded-full bg-primary" />
                       </div>
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-primary">
+                      <div className="pl-8 space-y-1">
+                        <span className="text-xs font-bold uppercase tracking-wider text-primary">
                           Application Locked
                         </span>
-                        <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest font-mono block">
-                          {new Date(app.createdAt).toLocaleDateString()}
+                        <span className="text-xs text-muted-foreground font-semibold block">
+                          {new Date(app.createdAt).toLocaleDateString()} at {new Date(app.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
-                        <p className="text-xs font-medium text-muted-foreground/70 pl-2 border-l border-border italic bg-muted/5 py-1 px-3 rounded-lg">
+                        <p className="text-xs font-medium text-zinc-650 dark:text-zinc-350 bg-zinc-50 dark:bg-zinc-900/60 py-1.5 px-3 rounded-xl border border-border/30 max-w-md inline-block">
                           Initial application submitted.
                         </p>
                       </div>
@@ -257,20 +266,20 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                   )}
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
 
           {/* Dossier Float Action Controls Bar */}
-          <div className="shrink-0 bg-background/95 backdrop-blur-md border-t border-border/40 p-4 flex items-center gap-3 backdrop-blur-md border-t border-border/40 p-4 flex items-center gap-3 relative z-20 shrink-0">
+          <div className="shrink-0 bg-background/95 backdrop-blur-md border-t border-border/40 p-4 flex items-center gap-3 relative z-20 shrink-0">
             <button
               onClick={() => {
                 onClose();
                 openUpdateModal(app, 'SHORTLISTED');
               }}
               disabled={['SHORTLISTED', 'SELECTED', 'REJECTED', 'OFFER_ACCEPTED', 'OFFER_REJECTED', 'WITHDRAWN'].includes(app.status)}
-              className="flex-1 py-3 bg-violet-600 hover:bg-violet-700 text-white font-black text-[9px] uppercase tracking-widest rounded-2xl shadow-lg shadow-violet-500/10 hover:shadow-violet-500/20 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer"
+              className="flex-1 h-11 bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-violet-500/10 hover:shadow-violet-500/20 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer"
             >
-              <Sparkles size={13} /> Shortlist
+              <Sparkles size={14} /> Shortlist
             </button>
             <button
               onClick={() => {
@@ -278,9 +287,9 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                 openUpdateModal(app, 'SELECTED');
               }}
               disabled={['SELECTED', 'REJECTED', 'OFFER_ACCEPTED', 'OFFER_REJECTED', 'WITHDRAWN'].includes(app.status)}
-              className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] uppercase tracking-widest rounded-2xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer"
+              className="flex-1 h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer"
             >
-              <CheckCircle2 size={13} /> Select
+              <CheckCircle2 size={14} /> Select
             </button>
             <button
               onClick={() => {
@@ -288,9 +297,9 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                 openUpdateModal(app, 'REJECTED');
               }}
               disabled={['REJECTED', 'OFFER_ACCEPTED', 'OFFER_REJECTED', 'WITHDRAWN'].includes(app.status)}
-              className="py-3 px-4 bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white font-black text-[9px] uppercase tracking-widest rounded-2xl border border-rose-500/10 hover:border-transparent transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer shrink-0"
+              className="h-11 px-5 bg-rose-500/10 hover:bg-rose-600 text-rose-600 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl border border-rose-500/10 hover:border-transparent transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer shrink-0"
             >
-              <XCircle size={13} /> Reject
+              <XCircle size={14} /> Reject
             </button>
           </div>
 

@@ -8,6 +8,6 @@
   "scripts": {
     "dev:scpms": "npm run dev --workspace=scpms-backend",
     "dev:resume": "npm run dev --workspace=resume-analyzer",
-    "dev:frontend": "npm run dev --workspace=scpms-frontend2"
+    "dev:frontend": "npm run dev --workspace=scpms-frontend"
   }
 }

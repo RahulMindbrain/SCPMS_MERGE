@@ -503,22 +503,22 @@ const InterviewSchedulerPage: React.FC = () => {
 >
   <div className="space-y-10 py-2">
     {/* Step 1: Configuration Header */}
-    <div className="relative overflow-hidden bg-indigo-600 dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl">
+    <div className="relative overflow-hidden bg-indigo-600 dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl flex flex-col md:flex-row gap-6">
       <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
         <Sparkles size={120} className="text-white" />
       </div>
       
         {isSuperAdmin && (
-          <div className="flex-1 space-y-3 w-full">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-              <Building2 size={12} className="text-primary" /> Target University
+          <div className="flex-1 space-y-3 w-full relative z-10">
+            <label className="text-[10px] font-black text-white/60 dark:text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+              <Building2 size={12} className="text-white/80" /> Target University
             </label>
             <div className="relative group">
               <Select value={wizardUniversityId} onValueChange={handleWizardUniversityChange}>
-                <SelectTrigger className="h-14 rounded-2xl bg-white/5 border-white/10 text-white font-bold text-xs uppercase tracking-tight pl-12 focus:ring-primary/40 transition-all hover:bg-white/10">
+                <SelectTrigger className="h-14 rounded-2xl bg-white/5 border-white/10 text-white font-bold text-xs uppercase tracking-tight pl-12 focus:ring-white/20 transition-all hover:bg-white/10 data-placeholder:text-white/60 [&_svg]:text-white/70">
                   <SelectValue placeholder="Select University" />
                 </SelectTrigger>
-                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-slate-500 group-focus-within:text-primary transition-colors" />
+                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-white/50 group-focus-within:text-white transition-colors" />
                 <SelectContent className="rounded-2xl border-slate-200 shadow-2xl">
                   <SelectItem value="all">All Universities</SelectItem>
                   {schedulerUniversities.map((uni) => (
@@ -530,16 +530,16 @@ const InterviewSchedulerPage: React.FC = () => {
           </div>
         )}
 
-        <div className="flex-1 space-y-3 w-full">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-            <Briefcase size={12} className="text-primary" /> Select Company
+        <div className="flex-1 space-y-3 w-full relative z-10">
+          <label className="text-[10px] font-black text-white/60 dark:text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+            <Briefcase size={12} className="text-white/80" /> Select Company
           </label>
           <div className="relative group">
             <Select value={wizardCompanyId} onValueChange={handleWizardCompanyChange}>
-              <SelectTrigger className="h-14 rounded-2xl bg-white/5 border-white/10 text-white font-bold text-xs uppercase tracking-tight pl-12 focus:ring-primary/40 transition-all hover:bg-white/10">
+              <SelectTrigger className="h-14 rounded-2xl bg-white/5 border-white/10 text-white font-bold text-xs uppercase tracking-tight pl-12 focus:ring-white/20 transition-all hover:bg-white/10 data-placeholder:text-white/60 [&_svg]:text-white/70">
                 <SelectValue placeholder="Select Company" />
               </SelectTrigger>
-              <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-slate-500 group-focus-within:text-primary transition-colors" />
+              <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-white/50 group-focus-within:text-white transition-colors" />
               <SelectContent className="rounded-2xl border-slate-200 shadow-2xl">
                 {companies.map((comp) => (
                   <SelectItem key={comp.id} value={comp.id.toString()}>{comp.name}</SelectItem>

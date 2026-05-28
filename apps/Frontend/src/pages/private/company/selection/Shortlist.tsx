@@ -1,22 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { Search, GraduationCap, ArrowUpRight } from 'lucide-react';
+import { Search, GraduationCap } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchApplications } from '@/redux/thunks/applicationThunk';
+import { fetchJobApplications } from '@/redux/thunks/companyThunk';
 import type { RootState, AppDispatch } from '@/redux/store/store';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Loader from '@/components/Loader';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// Dynamic avatar gradient generator based on candidate's name for visual aesthetic consistency
+const getAvatarGradient = (name: string) => {
+  const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const gradients = [
+    'from-indigo-500 to-purple-500 text-indigo-50 dark:from-indigo-600 dark:to-purple-600 ring-indigo-100/80 dark:ring-indigo-950/20',
+    'from-emerald-400 to-teal-650 text-emerald-50 dark:from-emerald-500 dark:to-teal-700 ring-emerald-100/80 dark:ring-emerald-950/20',
+    'from-pink-500 to-rose-500 text-pink-50 dark:from-pink-600 dark:to-rose-600 ring-pink-100/80 dark:ring-pink-950/20',
+    'from-amber-400 to-orange-500 text-amber-50 dark:from-amber-500 dark:to-orange-600 ring-amber-100/80 dark:ring-amber-950/20',
+    'from-blue-500 to-cyan-550 text-blue-50 dark:from-blue-600 dark:to-cyan-600 ring-blue-100/80 dark:ring-blue-950/20',
+    'from-violet-500 to-fuchsia-500 text-violet-50 dark:from-violet-600 dark:to-fuchsia-600 ring-violet-100/80 dark:ring-violet-950/20'
+  ];
+  return gradients[hash % gradients.length];
+};
 
 const Shortlist: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { applications, loading } = useSelector((state: RootState) => state.application);
+  const { applications, loading } = useSelector((state: RootState) => state.company);
   const safeApplications = Array.isArray(applications) ? applications : [];
 
   const [search, setSearch] = useState("");
   const [branchFilter, setBranchFilter] = useState("All");
 
   useEffect(() => {
-    dispatch(fetchApplications(1));
+    dispatch(fetchJobApplications({}));
   }, [dispatch]);
 
 
@@ -25,7 +46,9 @@ const Shortlist: React.FC = () => {
     ?.filter((app: any) => app.status === "SHORTLISTED")
     ?.map((app: any) => ({
       ...app,
-      branch: app.department?.name || "Other",
+      name: `${app.student?.user?.firstname || ''} ${app.student?.user?.lastname || ''}`.trim() || "Candidate",
+      branch: app.student?.department?.name || "Other",
+      email: app.student?.user?.email || "",
     }))
     ?.filter((item: any) => {
       return (
@@ -39,7 +62,7 @@ const Shortlist: React.FC = () => {
     new Set(
       safeApplications
         .filter((app: any) => app.status === "SHORTLISTED")
-        .map((app: any) => app.department?.name)
+        .map((app: any) => app.student?.department?.name)
         .filter(Boolean)
     )
   );
@@ -87,115 +110,156 @@ const Shortlist: React.FC = () => {
       </div>
 
       {/* Controls & Search */}
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-6 bg-white/80 dark:bg-[#161b22]/40 backdrop-blur-xl p-6 rounded-[2.5rem] border border-slate-200/60 dark:border-white/[0.08] shadow-xl shadow-primary/5">
-        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-white/5 p-1.5 rounded-2xl border border-slate-200 dark:border-white/[0.05] overflow-x-auto no-scrollbar w-full md:w-auto">
-          <button
-            onClick={() => setBranchFilter("All")}
-            className={cn(
-              "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 whitespace-nowrap",
-              branchFilter === "All"
-                ? "bg-white dark:bg-[#1e1f26] text-primary shadow-lg border border-slate-200/50 dark:border-white/10 scale-105"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            All Departments
-          </button>
-          {uniqueBranches.map((branch: any) => (
-            <button
-              key={branch}
-              onClick={() => setBranchFilter(branch)}
-              className={cn(
-                "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 whitespace-nowrap",
-                branchFilter === branch
-                  ? "bg-white dark:bg-[#1e1f26] text-primary shadow-lg border border-slate-200/50 dark:border-white/10 scale-105"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {branch}
-            </button>
-          ))}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-card/60 backdrop-blur-md border border-border/80 p-4.5 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] animate-in fade-in slide-in-from-top-2 duration-500 delay-200">
+        
+        {/* Department Filter Dropdown */}
+        <div className="min-w-[200px] w-full md:w-auto">
+          <Select value={branchFilter} onValueChange={setBranchFilter}>
+            <SelectTrigger className="w-full h-[46px] bg-background/50 border-border/60 rounded-2xl text-[10px] font-black uppercase tracking-wider px-4 hover:border-primary/30 transition-all shadow-xs">
+              <div className="flex items-center gap-2 truncate">
+                <GraduationCap className="size-3.5 text-muted-foreground shrink-0" />
+                <SelectValue placeholder="All Departments" />
+              </div>
+            </SelectTrigger>
+            <SelectContent className="rounded-2xl border-border shadow-2xl p-2 min-w-[220px]">
+              <SelectItem value="All" className="rounded-xl py-2 focus:bg-primary/5">
+                <span className="font-bold text-[10px] uppercase tracking-wider">All Departments</span>
+              </SelectItem>
+              {uniqueBranches.map((branch: any) => (
+                <SelectItem key={branch} value={branch} className="rounded-xl py-2 focus:bg-primary/5">
+                  <span className="font-bold text-[10px] uppercase tracking-wider">{branch}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="relative w-full lg:w-[350px] group px-2">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={18} />
+        {/* Search Input */}
+        <div className="relative w-full md:w-[350px] group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={18} />
           <input
             type="text"
             placeholder="Search candidates..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-slate-100/50 dark:bg-white/5 border-transparent focus:bg-white dark:focus:bg-card focus:border-primary/20 rounded-2xl transition-all font-black text-[11px] uppercase tracking-wider"
+            className="w-full pl-12 pr-4 py-3 bg-background/50 hover:bg-background/80 focus:bg-background border border-border/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium text-sm shadow-xs"
           />
         </div>
-      </div>
-
-      {/* Candidate Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {loading ? (
-          <div className="col-span-full py-32 flex flex-col items-center justify-center bg-card rounded-[3rem] border border-dashed border-border">
-             <div className="relative mb-6">
-                <Loader text="Analyzing Profiles..." />
-             </div>
+      </div>      {/* Candidate Table Container */}
+      {loading ? (
+        <div className="py-32 flex flex-col items-center justify-center bg-card rounded-[3rem] border border-dashed border-border">
+          <div className="relative mb-6">
+            <Loader text="Analyzing Profiles..." />
           </div>
-        ) : filteredData?.length === 0 ? (
-          <div className="col-span-full py-32 flex flex-col items-center justify-center bg-card rounded-[3rem] border-4 border-dashed border-border/50 text-center group">
-            <div className="w-24 h-24 bg-muted rounded-[2.5rem] flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500 shadow-inner">
-              <Search size={40} className="text-muted-foreground opacity-30" />
-            </div>
-            <h3 className="text-2xl font-black text-foreground tracking-tight uppercase">No Matches Found</h3>
-            <p className="text-sm text-muted-foreground font-medium mt-2 max-w-xs mx-auto">We couldn't find any shortlisted candidates matching your criteria.</p>
-            <Button 
-              variant="outline" 
-              onClick={() => { setBranchFilter('All'); setSearch(''); }}
-              className="mt-8 font-black text-[10px] uppercase tracking-[0.2em] rounded-xl h-12 px-8"
-            >
-              Clear Filters
-            </Button>
+        </div>
+      ) : filteredData?.length === 0 ? (
+        <div className="py-32 flex flex-col items-center justify-center bg-card rounded-[3rem] border-4 border-dashed border-border/50 text-center group">
+          <div className="w-24 h-24 bg-muted rounded-[2.5rem] flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500 shadow-inner">
+            <Search size={40} className="text-muted-foreground opacity-30" />
           </div>
-        ) : (
-          filteredData?.map((item: any) => (
-            <div key={item.applicationId} className="group saas-card p-0 overflow-hidden border-2 border-border/30 hover:border-primary/30 transition-all duration-500 shadow-xl shadow-primary/[0.02] bg-gradient-to-br from-card to-transparent">
-              <div className="p-8 space-y-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-2xl font-black shadow-inner border border-primary/10 transition-transform group-hover:scale-110 group-hover:rotate-3">
-                      {item.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-black text-foreground tracking-tight group-hover:text-primary transition-colors">{item.name}</h3>
-                      <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10 w-fit">
-                        <span className="text-[9px] font-black uppercase tracking-widest">{item.status}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-muted-foreground/40">
-                    <GraduationCap size={20} />
-                  </div>
-                </div>
+          <h3 className="text-2xl font-black text-foreground tracking-tight uppercase">No Matches Found</h3>
+          <p className="text-sm text-muted-foreground font-medium mt-2 max-w-xs mx-auto">We couldn't find any shortlisted candidates matching your criteria.</p>
+          <Button 
+            variant="outline" 
+            onClick={() => { setBranchFilter('All'); setSearch(''); }}
+            className="mt-8 font-black text-[10px] uppercase tracking-[0.2em] rounded-xl h-12 px-8"
+          >
+            Clear Filters
+          </Button>
+        </div>
+      ) : (
+        <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-zinc-200/60 dark:border-zinc-800/80 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[800px] border-collapse text-left">
+              <thead>
+                <tr className="border-b border-zinc-200/60 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/50">
+                  <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Candidate</th>
+                  <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Department</th>
+                  <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">Verified CGPA</th>
+                  <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Hiring Status</th>
+                  <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Current Round</th>
+                  <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">Availability</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData?.map((item: any) => {
+                  const gradClasses = getAvatarGradient(item.name);
+                  const initials = item.name
+                    .split(" ")
+                    .map((n: any) => n[0])
+                    .join("")
+                    .toUpperCase()
+                    .substring(0, 2) || "ST";
 
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs font-bold text-muted-foreground uppercase tracking-widest border-b border-border/30 pb-2">
-                    <span>Department</span>
-                    <span className="text-foreground">{item.branch}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs font-bold text-muted-foreground uppercase tracking-widest border-b border-border/30 pb-2">
-                    <span>Email</span>
-                    <span className="text-foreground lowercase truncate max-w-[180px]">{item.email}</span>
-                  </div>
-                </div>
+                  return (
+                    <tr 
+                      key={item.applicationId} 
+                      className="border-b border-zinc-150/40 dark:border-zinc-850/40 hover:bg-zinc-50/40 dark:hover:bg-zinc-800/10 transition-all duration-200 group"
+                    >
+                      {/* Candidate Info */}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3.5">
+                          <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-xs tracking-tight bg-gradient-to-br shrink-0 ring-2 ring-offset-2 ring-offset-background", gradClasses)}>
+                            {initials}
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="text-sm font-black text-zinc-900 dark:text-white tracking-tight group-hover:text-primary transition-colors truncate">
+                              {item.name}
+                            </h4>
+                            <span className="text-[10px] text-muted-foreground lowercase truncate block">
+                              {item.email}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
 
-                <div className="pt-2 flex items-center gap-3">
-                  <Button className="flex-1 rounded-xl h-11 bg-primary hover:bg-primary/90 font-black text-[10px] uppercase tracking-widest shadow-lg shadow-primary/20">
-                    View Profile
-                  </Button>
-                  <Button variant="outline" className="w-11 h-11 p-0 rounded-xl border-border/50 hover:bg-muted transition-colors">
-                    <ArrowUpRight size={18} />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+                      {/* Department */}
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                          {item.branch}
+                        </span>
+                      </td>
+
+                      {/* Verified CGPA */}
+                      <td className="px-6 py-4 text-center">
+                        <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-black text-violet-650 bg-violet-500/5 dark:bg-violet-500/10 dark:text-violet-400 rounded-lg border border-violet-500/10">
+                          {item.student?.cgpa || 'N/A'}
+                        </span>
+                      </td>
+
+                      {/* Hiring Status */}
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-500/10">
+                          {item.status}
+                        </span>
+                      </td>
+
+                      {/* Current Round */}
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-violet-500/10 text-violet-600 dark:text-violet-400 rounded-lg border border-violet-500/10">
+                          {item.currentRound || 'Aptitude'}
+                        </span>
+                      </td>
+
+                      {/* Availability */}
+                      <td className="px-6 py-4 text-right">
+                        <span className={cn(
+                          "inline-flex items-center px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-lg border",
+                          item.student?.isPlaced 
+                            ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/10" 
+                            : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/10"
+                        )}>
+                          {item.student?.isPlaced ? "Placed" : "Available"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

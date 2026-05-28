@@ -5,7 +5,7 @@ import {
   CheckCircle, Globe, MapPin,
   Award, Layers, Cpu, Rocket,
   Calendar, CalendarDays,
-  Sparkles, Copy, Check, Link, ListChecks, User, X, Phone
+  Sparkles, Copy, Check, Link, ListChecks, User, Phone
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {

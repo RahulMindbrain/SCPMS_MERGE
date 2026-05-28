@@ -118,7 +118,7 @@ export const updateApplicationStatus = createAsyncThunk(
     "student/updateApplicationStatus",
     async ({ id, action }: { id: number; action: "ACCEPT" | "REJECT" }, { rejectWithValue }) => {
         try {
-            const response = await putAPI<any>(`/student/application/${id}`, { action });
+            const response = await putAPI<any>(`/student/application/${id}/offer-response`, { action });
             return response;
         } catch (error: any) {
             return rejectWithValue(error?.message || "Failed to update application status");
