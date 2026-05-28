@@ -262,7 +262,7 @@ const SkillManagement = () => {
                 <TableRow className="border-border/50 hover:bg-transparent">
                   <TableHead className="w-20 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground py-5 pl-8">#</TableHead>
                   <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground py-5">Skill Name</TableHead>
-                  <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground py-5 text-center">Skill ID</TableHead>
+                  {/* <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground py-5 text-center">Skill ID</TableHead> */}
                   <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground py-5 text-right pr-8">Management</TableHead>
                 </TableRow>
               </TableHeader>
@@ -299,11 +299,11 @@ const SkillManagement = () => {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-center py-5">
+                      {/* <TableCell className="text-center py-5">
                         <span className="px-2 py-1 rounded-md bg-muted font-bold text-[10px] text-muted-foreground border border-border/50">
                           {skill.id}
                         </span>
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell className="text-right py-5 pr-8">
                         <div className="flex justify-end gap-2">
                           <Button
