@@ -260,13 +260,13 @@ const ManageJobs: React.FC = () => {
                           >
                             <Edit3 size={12} /> Edit
                           </Link>
-                          <button
+                          {/* <button
                             onClick={() => handleDeleteJob(job.id)}
                             className="rounded-lg p-2 text-muted-foreground/40 transition-all hover:bg-rose-500/10 hover:text-rose-500"
                             title="Delete Drive"
                           >
                             <Trash2 size={16} />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
