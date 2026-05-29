@@ -9,6 +9,7 @@ import {
 } from "../services/application.service";
 
 import { sendError, sendSuccess } from "../utils/response";
+import { Role } from "@prisma/client";
 
 export const createApplicationController = async (
   req: Request,
@@ -173,6 +174,12 @@ export const getScheduleApplicationsController = async (
   res: Response,
 ) => {
   try {
+    const user = res.locals.user;
+
+    if (!user) {
+      return sendError(res, 401, "Unauthorized");
+    }
+
     const scheduleId = Number(req.params.id);
 
     if (!Number.isInteger(scheduleId) || scheduleId <= 0) {
@@ -180,10 +187,15 @@ export const getScheduleApplicationsController = async (
     }
 
     const page = req.query.page ? Number(req.query.page) : 1;
-
     const limit = req.query.limit ? Number(req.query.limit) : 10;
 
-    const data = await getScheduleApplicationsService(scheduleId, page, limit);
+    const data = await getScheduleApplicationsService(
+      scheduleId,
+      user.id,
+      user.role,
+      page,
+      limit,
+    );
 
     return sendSuccess(res, 200, "Applications fetched", data);
   } catch (error: any) {
