@@ -15,6 +15,7 @@ import {
 
 import { sendSuccess, sendError } from "../utils/response";
 import { getAdminByUserId } from "../repository/admin.repository";
+import { ScheduleStatus } from "@prisma/client";
 
 export const createScheduleController = async (req: Request, res: Response) => {
   try {
@@ -61,13 +62,35 @@ export const getAllSchedulesController = async (
   res: Response,
 ) => {
   try {
+    // console.log("getAllSchedulesController");
     const { id: userId, role } = res.locals.user;
 
     const companyId = req.query.companyId
       ? Number(req.query.companyId)
       : undefined;
 
-    const data = await getAllSchedulesService(userId, role, companyId);
+    const universityId = req.query.universityId
+      ? Number(req.query.universityId)
+      : undefined;
+
+    const page = req.query.page ? Number(req.query.page) : 1;
+
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+
+    //console.log(req.query);
+    //console.log("status =", req.query.status);
+
+    const status = req.query.status as ScheduleStatus | undefined;
+
+    const data = await getAllSchedulesService(
+      userId,
+      role,
+      companyId,
+      universityId,
+      page,
+      limit,
+      status,
+    );
 
     return sendSuccess(res, 200, "Schedules fetched", data);
   } catch (error: any) {

@@ -254,6 +254,112 @@ export const getScheduleById = async (id: number) => {
   });
 };
 
+export const getSchedulesForAdmin = async (
+  universityId: number,
+  companyId?: number,
+  page: number = 1,
+  limit: number = 10,
+  status?: ScheduleStatus,
+) => {
+  // console.log("admin repository");
+  const skip = (page - 1) * limit;
+
+  // console.log("status =", status);
+
+  const where = {
+    universityId,
+    ...(companyId && { companyId }),
+    ...(status && {
+      status,
+    }),
+  };
+
+  // console.log("where =", where);
+
+  const [items, total] = await prisma.$transaction([
+    prisma.interviewSchedule.findMany({
+      where,
+      skip,
+      take: limit,
+
+      include: {
+        company: true,
+        university: true,
+      },
+
+      orderBy: {
+        startTime: "asc",
+      },
+    }),
+
+    prisma.interviewSchedule.count({
+      where,
+    }),
+  ]);
+
+  return {
+    data: items,
+
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+export const getSchedulesForCompany = async (
+  companyId: number,
+  universityId?: number,
+  page: number = 1,
+  limit: number = 10,
+  status?: ScheduleStatus,
+) => {
+  // console.log("company repository");
+  const skip = (page - 1) * limit;
+
+  const where = {
+    companyId,
+    ...(universityId && { universityId }),
+    ...(status && {
+      status,
+    }),
+  };
+
+  const [items, total] = await prisma.$transaction([
+    prisma.interviewSchedule.findMany({
+      where,
+      skip,
+      take: limit,
+
+      include: {
+        company: true,
+        university: true,
+      },
+
+      orderBy: {
+        startTime: "asc",
+      },
+    }),
+
+    prisma.interviewSchedule.count({
+      where,
+    }),
+  ]);
+
+  return {
+    data: items,
+
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
 export const getAllSchedules = async (companyId: number) => {
   return prisma.interviewSchedule.findMany({
     where: {
