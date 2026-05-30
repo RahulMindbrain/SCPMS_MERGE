@@ -86,7 +86,7 @@ export function SectionCards({
               <div className={`stat-icon-box ${iconBg}`}>
                 <Icon className="size-6 transition-transform duration-500 group-hover:scale-110" />
               </div>
-              <div className="flex flex-col items-end">
+              {/* <div className="flex flex-col items-end">
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-1">
                   Metric ID: {key.slice(0, 5).toUpperCase()}
                 </span>
@@ -94,7 +94,7 @@ export function SectionCards({
                    <div className="size-1.5 rounded-full bg-primary animate-pulse" />
                    <span className="text-[9px] font-bold text-primary uppercase">Live Data</span>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="space-y-1 mb-6">
