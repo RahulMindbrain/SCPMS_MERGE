@@ -34,6 +34,8 @@ export function NavSecondary({
     }
   }
 
+  if (!items || items.length === 0) return null
+
   return (
     <SidebarGroup {...props} className="p-1">
       <SidebarGroupLabel className="text-[10.5px] font-bold uppercase tracking-[0.15em] text-slate-400/80 dark:text-slate-500/80 px-3 mb-1.5 select-none group-data-[collapsible=icon]:hidden">
