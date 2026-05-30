@@ -38,6 +38,9 @@ const PostJob: React.FC = () => {
     location: '',
   });
 
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [customLocation, setCustomLocation] = useState('');
+
   const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
 
@@ -63,6 +66,10 @@ const PostJob: React.FC = () => {
           title: jobToEdit.title || '',
           location: jobToEdit.location || '',
         });
+        const locs = jobToEdit.location
+          ? jobToEdit.location.split(',').map((l: string) => l.trim()).filter(Boolean)
+          : [];
+        setSelectedLocations(locs);
         setSelectedBranches(
           jobToEdit.eligibleDepartments?.map((d: any) => d.id) ||
           jobToEdit.eligibleDepartmentIds ||
@@ -96,15 +103,44 @@ const PostJob: React.FC = () => {
     }
   };
 
-  const selectLocationSuggestion = (loc: string) => {
-    setFormData(prev => ({ ...prev, location: loc }));
-    if (formErrors.location) {
-      setFormErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors.location;
-        return newErrors;
+  const handleAddCustomLocation = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const trimmed = customLocation.trim();
+    if (trimmed && !selectedLocations.includes(trimmed)) {
+      setSelectedLocations(prev => {
+        const newLocs = [...prev, trimmed];
+        if (formErrors.location) {
+          setFormErrors(errors => {
+            const newErrors = { ...errors };
+            delete newErrors.location;
+            return newErrors;
+          });
+        }
+        return newLocs;
       });
+      setCustomLocation('');
     }
+  };
+
+  const removeLocation = (locToRemove: string) => {
+    setSelectedLocations(prev => prev.filter(l => l !== locToRemove));
+  };
+
+  const selectLocationSuggestion = (loc: string) => {
+    setSelectedLocations(prev => {
+      const newLocs = prev.includes(loc)
+        ? prev.filter(l => l !== loc)
+        : [...prev, loc];
+      
+      if (newLocs.length > 0 && formErrors.location) {
+        setFormErrors(errors => {
+          const newErrors = { ...errors };
+          delete newErrors.location;
+          return newErrors;
+        });
+      }
+      return newLocs;
+    });
   };
 
   const toggleBranch = (branchId: number) => {
@@ -151,7 +187,7 @@ const PostJob: React.FC = () => {
     const errors: Record<string, string> = {};
 
     if (!formData.title.trim()) errors.title = "Job Title is required";
-    if (!formData.location.trim()) errors.location = "Location is required";
+    if (selectedLocations.length === 0) errors.location = "At least one location is required";
     if (selectedBranches.length === 0) errors.branches = "At least one target branch is required";
     if (selectedSkills.length === 0) errors.skills = "At least one core skill is required";
 
@@ -171,7 +207,7 @@ const PostJob: React.FC = () => {
     try {
       const payload = {
         title: formData.title.trim(),
-        location: formData.location.trim(),
+        location: selectedLocations.join(', '),
         eligibleDepartmentIds: selectedBranches,
         skillIds: selectedSkills
       };
@@ -311,38 +347,65 @@ const PostJob: React.FC = () => {
                 {/* Work Location */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="saas-label text-[11px] font-black uppercase tracking-wider">Work Location</label>
-                    <span className="text-[10px] text-muted-foreground italic font-medium">Click suggestions below</span>
+                    <label className="saas-label text-[11px] font-black uppercase tracking-wider">Work Location(s)</label>
+                    <span className="text-[10px] text-muted-foreground italic font-medium">Add custom or click suggestions</span>
                   </div>
-                  <div className="relative group">
-                    <MapPin className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${formErrors.location ? 'text-destructive' : 'text-muted-foreground group-focus-within:text-primary'}`} size={16} />
+                  
+                  {/* Selected Locations Container */}
+                  <div className={`flex flex-wrap items-center gap-2 p-2.5 min-h-[48px] rounded-xl border transition-all bg-background ${formErrors.location ? 'border-destructive ring-4 ring-destructive/10' : 'border-border focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10'}`}>
+                    <MapPin className="text-muted-foreground ml-2" size={16} />
+                    {selectedLocations.length === 0 && !customLocation && (
+                      <span className="text-muted-foreground text-xs font-medium ml-2 select-none">No locations selected...</span>
+                    )}
+                    {selectedLocations.map(loc => (
+                      <span key={loc} className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[9px] font-bold uppercase tracking-wider animate-in zoom-in-95 duration-200">
+                        {loc}
+                        <X size={11} className="hover:bg-primary/20 rounded-full cursor-pointer transition-colors" onClick={() => removeLocation(loc)} />
+                      </span>
+                    ))}
                     <input
                       type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Bangalore, India (Hybrid)"
-                      className={`saas-input saas-input-with-icon w-full pl-11 ${formErrors.location ? 'border-destructive ring-4 ring-destructive/10' : ''}`}
-                      required
+                      placeholder={selectedLocations.length > 0 ? "" : "Type location & press Enter..."}
+                      value={customLocation}
+                      onChange={(e) => setCustomLocation(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddCustomLocation();
+                        }
+                      }}
+                      className="flex-1 bg-transparent border-none outline-none text-foreground font-semibold text-xs min-w-[120px] ml-2 placeholder:text-muted-foreground/50"
                     />
+                    {customLocation.trim() && (
+                      <button
+                        type="button"
+                        onClick={() => handleAddCustomLocation()}
+                        className="text-[9px] font-black text-primary uppercase tracking-widest hover:underline px-2"
+                      >
+                        Add
+                      </button>
+                    )}
                   </div>
                   
                   {/* Location suggestions */}
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {locationSuggestions.map((loc) => (
-                      <button
-                        key={loc}
-                        type="button"
-                        onClick={() => selectLocationSuggestion(loc)}
-                        className={`text-[9px] font-bold px-2.5 py-1.5 rounded-lg border transition-all duration-300 ${
-                          formData.location === loc
-                            ? 'bg-primary text-white border-primary shadow-sm'
-                            : 'bg-muted/30 text-muted-foreground border-border/40 hover:bg-muted/80 hover:text-foreground'
-                        }`}
-                      >
-                        {loc}
-                      </button>
-                    ))}
+                    {locationSuggestions.map((loc) => {
+                      const isSelected = selectedLocations.includes(loc);
+                      return (
+                        <button
+                          key={loc}
+                          type="button"
+                          onClick={() => selectLocationSuggestion(loc)}
+                          className={`text-[9px] font-bold px-2.5 py-1.5 rounded-lg border transition-all duration-300 ${
+                            isSelected
+                              ? 'bg-primary text-white border-primary shadow-sm'
+                              : 'bg-muted/30 text-muted-foreground border-border/40 hover:bg-muted/80 hover:text-foreground'
+                          }`}
+                        >
+                          {loc}
+                        </button>
+                      );
+                    })}
                   </div>
                   {renderError('location')}
                 </div>
