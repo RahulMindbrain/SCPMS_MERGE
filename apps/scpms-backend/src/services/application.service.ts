@@ -294,13 +294,15 @@ export const updateApplicationService = async ({
     throw new Error("Offer already finalized");
   }
 
-  const allowedStatuses =
-    allowedStatusTransitions[existing.status as ApplicationStatus];
+  if (existing.status !== status) {
+    const allowedStatuses =
+      allowedStatusTransitions[existing.status as ApplicationStatus];
 
-  if (!allowedStatuses.includes(status)) {
-    throw new Error(
-      `Invalid status transition from ${existing.status} to ${status}`,
-    );
+    if (!allowedStatuses.includes(status)) {
+      throw new Error(
+        `Invalid status transition from ${existing.status} to ${status}`,
+      );
+    }
   }
 
   if (status !== "SHORTLISTED" && currentRound) {

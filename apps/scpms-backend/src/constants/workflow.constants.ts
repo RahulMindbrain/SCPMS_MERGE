@@ -29,7 +29,7 @@ export const allowedRoundTransitions: Record<InterviewRound, InterviewRound[]> =
 
     HR: ["TECHNICAL", "MANAGERIAL"],
 
-    TECHNICAL: ["MANAGERIAL"],
+    TECHNICAL: ["HR", "MANAGERIAL"],
 
     MANAGERIAL: [],
 

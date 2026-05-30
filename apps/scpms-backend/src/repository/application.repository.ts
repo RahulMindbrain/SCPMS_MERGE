@@ -310,7 +310,6 @@ export const withdrawApplication = async (id: number) => {
 
     data: {
       status: "OFFER_REJECTED",
-      rejectedAt: new Date(),
     },
   });
 };
