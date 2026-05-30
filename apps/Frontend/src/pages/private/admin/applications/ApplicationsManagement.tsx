@@ -30,7 +30,8 @@ const ApplicationsManagement: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { applications = [], schedules = [], meta, loading } = useSelector((state: RootState) => state.interview);
+  const { applications = [], schedules, meta, loading } = useSelector((state: RootState) => state.interview);
+  const schedulesList = Array.isArray(schedules) ? schedules : [];
   const { companies = [] } = useSelector((state: RootState) => state.company);
   const { id } = useParams<{ id?: string }>();
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
@@ -39,10 +40,10 @@ const ApplicationsManagement: React.FC = () => {
 
   // Handle automatic redirection to first schedule if no ID is present
   useEffect(() => {
-    if (!id && schedules.length > 0) {
-      navigate(`/admin/applications/${schedules[0].id}`, { replace: true });
+    if (!id && schedulesList.length > 0) {
+      navigate(`/admin/applications/${schedulesList[0].id}`, { replace: true });
     }
-  }, [id, schedules, navigate]);
+  }, [id, schedulesList, navigate]);
 
   // Fetch companies on mount
   useEffect(() => {
@@ -236,10 +237,10 @@ const ApplicationsManagement: React.FC = () => {
                 <div className="flex items-center justify-between px-1">
                   <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Interview Drive</label>
                 </div>
-                <Select 
+                 <Select 
                   value={scheduleId?.toString() || ""} 
                   onValueChange={handleScheduleChange}
-                  disabled={schedules.length === 0}
+                  disabled={schedulesList.length === 0}
                 >
                   <SelectTrigger className="h-14 bg-background border-border/40 rounded-2xl text-xs font-bold uppercase tracking-widest px-4 shadow-sm hover:border-primary/30 transition-all">
                     <div className="flex items-center gap-2 truncate">
@@ -248,7 +249,7 @@ const ApplicationsManagement: React.FC = () => {
                     </div>
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-border shadow-2xl p-2 w-[340px]">
-                    {schedules.map((s: any) => (
+                    {schedulesList.map((s: any) => (
                       <SelectItem key={s.id} value={s.id.toString()} className="rounded-xl py-3 focus:bg-primary/5 border-b border-border/5 last:border-0 mb-1">
                         <div className="flex flex-col gap-1">
                           <span className="font-bold text-[11px] text-foreground truncate max-w-[280px]">

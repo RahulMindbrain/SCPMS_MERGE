@@ -174,7 +174,7 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
                     <FileText size={18} />
                   </div>
                   <div className="text-left">
-                    <p className="text-sm font-bold text-foreground tracking-tight">Candidate Resume dossier</p>
+                    <p className="text-sm font-bold text-foreground tracking-tight">Candidate Resume</p>
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Verified PDF Attachment</p>
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export const CandidateDetailsDrawer: React.FC<CandidateDetailsDrawerProps> = ({
             </div>
           </div>
 
-          {/* Dossier Float Action Controls Bar */}
+          {/* Float Action Controls Bar */}
           <div className="shrink-0 bg-background/95 backdrop-blur-md border-t border-border/40 p-4 flex items-center gap-3 relative z-20 shrink-0">
             <button
               onClick={() => {

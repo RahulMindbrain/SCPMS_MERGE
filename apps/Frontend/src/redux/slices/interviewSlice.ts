@@ -48,7 +48,11 @@ const interviewSlice = createSlice({
       })
       .addCase(fetchSchedules.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.schedules = action.payload.data;
+        state.schedules = Array.isArray(action.payload?.data)
+          ? action.payload.data
+          : Array.isArray(action.payload)
+          ? action.payload
+          : [];
       })
       .addCase(fetchSchedules.rejected, (state, action) => {
         state.loading = false;
@@ -61,7 +65,11 @@ const interviewSlice = createSlice({
       })
       .addCase(fetchSchedulesByCompany.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.schedules = action.payload.data;
+        state.schedules = Array.isArray(action.payload?.data)
+          ? action.payload.data
+          : Array.isArray(action.payload)
+          ? action.payload
+          : [];
       })
       .addCase(fetchSchedulesByCompany.rejected, (state, action) => {
         state.loading = false;
@@ -74,7 +82,11 @@ const interviewSlice = createSlice({
       })
       .addCase(fetchCompanySchedules.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.schedules = action.payload.data;
+        state.schedules = Array.isArray(action.payload?.data)
+          ? action.payload.data
+          : Array.isArray(action.payload)
+          ? action.payload
+          : [];
       })
       .addCase(fetchCompanySchedules.rejected, (state, action) => {
         state.loading = false;
@@ -87,6 +99,9 @@ const interviewSlice = createSlice({
       })
       .addCase(createSchedule.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        if (!Array.isArray(state.schedules)) {
+          state.schedules = [];
+        }
         if (action.payload.success !== false && action.payload.data) {
           state.schedules.unshift(action.payload.data);
         }
@@ -98,6 +113,9 @@ const interviewSlice = createSlice({
       // Update Schedule
       .addCase(updateSchedule.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        if (!Array.isArray(state.schedules)) {
+          state.schedules = [];
+        }
         if (action.payload.success !== false && action.payload.data) {
           const updated = action.payload.data;
           state.schedules = state.schedules.map((s) =>
@@ -114,6 +132,9 @@ const interviewSlice = createSlice({
       // Approve Schedule
       .addCase(approveSchedule.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        if (!Array.isArray(state.schedules)) {
+          state.schedules = [];
+        }
         const updated = action.payload.data;
         state.schedules = state.schedules.map((s) =>
           s.id === updated.id ? { ...s, ...updated } : s
@@ -124,12 +145,17 @@ const interviewSlice = createSlice({
         state.error = typeof action.payload === 'string' ? action.payload : "Failed to update approval status";
       })
       // Delete Schedule
-
       .addCase(deleteSchedule.fulfilled, (state, action) => {
+        if (!Array.isArray(state.schedules)) {
+          state.schedules = [];
+        }
         state.schedules = state.schedules.filter((s) => s.id !== action.payload.id);
       })
       // Fetch Messages
       .addCase(fetchScheduleMessages.fulfilled, (state, action: PayloadAction<any>) => {
+        if (!Array.isArray(state.schedules)) {
+          state.schedules = [];
+        }
         const { id, messages } = action.payload;
         state.schedules = state.schedules.map((s) =>
           s.id === id ? { ...s, messages } : s
@@ -137,6 +163,9 @@ const interviewSlice = createSlice({
       })
       // Send Message
       .addCase(sendScheduleMessage.fulfilled, (state, action: PayloadAction<any>) => {
+        if (!Array.isArray(state.schedules)) {
+          state.schedules = [];
+        }
         const { id, raw } = action.payload;
         const newMessage = raw.data || raw;
         state.schedules = state.schedules.map((s) =>
@@ -153,6 +182,9 @@ const interviewSlice = createSlice({
         state.loading = false;
         state.applications = applications || [];
         state.meta = meta;
+        if (!Array.isArray(state.schedules)) {
+          state.schedules = [];
+        }
         state.schedules = state.schedules.map((s) =>
           s.id === id ? { ...s, applications } : s
         );
@@ -170,7 +202,11 @@ const interviewSlice = createSlice({
       })
       .addCase(fetchCompanyInterviewSchedules.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.schedules = action.payload || [];
+        state.schedules = Array.isArray(action.payload?.data)
+          ? action.payload.data
+          : Array.isArray(action.payload)
+          ? action.payload
+          : [];
         if (state.schedules.length > 0 && !state.selectedSchedule) {
           state.selectedSchedule = state.schedules[0];
         }

@@ -40,12 +40,13 @@ import { PageHeader } from '@/components/PageHeader';
 const InterviewSchedulerPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { 
-    schedules, 
+    schedules: rawSchedules, 
     loading,
     schedulerUniversities,
     schedulerJobs,
     schedulerLoading
   } = useSelector((state: RootState) => state.interview);
+  const schedules = Array.isArray(rawSchedules) ? rawSchedules : [];
   const { companies } = useSelector((state: RootState) => state.company);
   const { userType } = useSelector((state: RootState) => state.auth);
 

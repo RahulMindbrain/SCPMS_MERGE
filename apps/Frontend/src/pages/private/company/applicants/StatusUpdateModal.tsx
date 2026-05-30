@@ -1,11 +1,11 @@
 import React from 'react';
-import { 
-  X, 
-  Sparkles, 
-  CheckCircle2, 
-  XCircle, 
-  ShieldAlert, 
-  Info, 
+import {
+  X,
+  Sparkles,
+  CheckCircle2,
+  XCircle,
+  ShieldAlert,
+  Info,
   AlertCircle,
   Brain,
   Code2,
@@ -19,8 +19,8 @@ const isBackward = (current: string, next: string) => {
   if (next === 'REJECTED') return false; // Can always reject unless already rejected or finalized
   const currentIndex = STATUS_FLOW.indexOf(current);
   const nextIndex = STATUS_FLOW.indexOf(next);
-  
-  if (nextIndex === -1) return false; 
+
+  if (nextIndex === -1) return false;
   if (currentIndex === -1) return false;
 
   return nextIndex < currentIndex;
@@ -31,7 +31,7 @@ const isRoundBackward = (currentRound: string | null | undefined, nextRound: str
   const ROUNDS_ORDER = ['APTITUDE', 'TECHNICAL', 'HR'];
   const currentIndex = ROUNDS_ORDER.indexOf(currentRound);
   const nextIndex = ROUNDS_ORDER.indexOf(nextRound);
-  
+
   if (currentIndex === -1 || nextIndex === -1) return false;
   return nextIndex < currentIndex;
 };
@@ -73,16 +73,16 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
 }) => {
   const getRoundProgressState = (roundId: string, app: any) => {
     const { status, currentRound } = app;
-    
+
     if (status === 'APPLIED') {
       return 'inactive';
     }
-    
+
     const roundsList = ['APTITUDE', 'TECHNICAL', 'HR'];
     const activeRound = currentRound || 'APTITUDE';
     const activeIdx = roundsList.indexOf(activeRound);
     const roundIdx = roundsList.indexOf(roundId);
-    
+
     if (status === 'REJECTED') {
       if (roundIdx < activeIdx) {
         return 'completed';
@@ -92,11 +92,11 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
         return 'inactive';
       }
     }
-    
+
     if (status === 'SELECTED' || status === 'OFFER_ACCEPTED') {
       return 'completed';
     }
-    
+
     // SHORTLISTED
     if (roundIdx < activeIdx) {
       return 'completed';
@@ -113,7 +113,7 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
       let defaultRound = 'APTITUDE';
       if (selectedApp.currentRound === 'APTITUDE') defaultRound = 'TECHNICAL';
       else if (selectedApp.currentRound === 'TECHNICAL') defaultRound = 'HR';
-      
+
       setTargetRound(defaultRound);
       setReasonText(getPresetReason('SHORTLISTED', defaultRound));
     } else {
@@ -146,7 +146,7 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
   relative animate-in zoom-in-95 duration-300 relative overflow-hidden">
         {/* Modal Ambient Mesh */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-        
+
         {/* Header */}
         <div className="flex items-start justify-between relative z-10 text-left">
           <div className="space-y-1">
@@ -162,7 +162,7 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
               </span>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 hover:bg-muted/10 text-muted-foreground hover:text-foreground rounded-full transition-colors cursor-pointer"
           >
@@ -174,24 +174,24 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
         {(validationError || submissionError) && (() => {
           const err = submissionError || validationError;
           if (!err) return null;
-          
+
           const isWarning = err.type === 'warning';
           const isInfo = err.type === 'info';
-          
-          const bgClass = isWarning 
-            ? 'bg-amber-50/80 border-amber-200/50 text-amber-900 dark:bg-amber-950/20 dark:border-amber-900/30 dark:text-amber-300' 
-            : isInfo 
+
+          const bgClass = isWarning
+            ? 'bg-amber-50/80 border-amber-200/50 text-amber-900 dark:bg-amber-950/20 dark:border-amber-900/30 dark:text-amber-300'
+            : isInfo
               ? 'bg-blue-50/80 border-blue-200/50 text-blue-900 dark:bg-blue-950/20 dark:border-blue-900/30 dark:text-blue-300'
               : 'bg-red-50/80 border-red-200/50 text-red-900 dark:bg-red-950/20 dark:border-red-900/30 dark:text-red-300';
-          
+
           const borderClass = isWarning
             ? 'border-amber-200/50'
             : isInfo
               ? 'border-blue-200/50'
               : 'border-red-200/50';
 
-          const iconColor = isWarning 
-            ? 'text-amber-600 dark:text-amber-400' 
+          const iconColor = isWarning
+            ? 'text-amber-600 dark:text-amber-400'
             : isInfo
               ? 'text-blue-600 dark:text-blue-400'
               : 'text-rose-600 dark:text-rose-400';
@@ -218,7 +218,7 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
                 <h4 className="text-xs font-bold uppercase tracking-wider">{err.title}</h4>
                 <p className="text-xs font-medium opacity-90 leading-relaxed">{err.message}</p>
                 {submissionError && (
-                  <button 
+                  <button
                     onClick={(e) => {
                       e.preventDefault();
                       submitStatusUpdate();
@@ -247,19 +247,19 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
             ].map((statusItem) => {
               const isSelected = targetStatus === statusItem.id;
               const isDisabled = isBackward(selectedApp.status, statusItem.id);
-              
+
               const themeClasses = {
-                blue: isSelected 
-                  ? 'border-blue-500 bg-blue-500/5 text-blue-600 shadow-md shadow-blue-500/5' 
+                blue: isSelected
+                  ? 'border-blue-500 bg-blue-500/5 text-blue-600 shadow-md shadow-blue-500/5'
                   : 'border-border bg-card text-muted-foreground hover:border-border/80 hover:text-foreground',
-                violet: isSelected 
-                  ? 'border-violet-500 bg-violet-500/5 text-violet-600 shadow-md shadow-violet-500/5' 
+                violet: isSelected
+                  ? 'border-violet-500 bg-violet-500/5 text-violet-600 shadow-md shadow-violet-500/5'
                   : 'border-border bg-card text-muted-foreground hover:border-border/80 hover:text-foreground',
-                emerald: isSelected 
-                  ? 'border-emerald-500 bg-emerald-500/5 text-emerald-600 shadow-md shadow-emerald-500/5' 
+                emerald: isSelected
+                  ? 'border-emerald-500 bg-emerald-500/5 text-emerald-600 shadow-md shadow-emerald-500/5'
                   : 'border-border bg-card text-muted-foreground hover:border-border/80 hover:text-foreground',
-                rose: isSelected 
-                  ? 'border-rose-500 bg-rose-500/5 text-rose-600 shadow-md shadow-rose-500/5' 
+                rose: isSelected
+                  ? 'border-rose-500 bg-rose-500/5 text-rose-600 shadow-md shadow-rose-500/5'
                   : 'border-border bg-card text-muted-foreground hover:border-border/80 hover:text-foreground'
               }[statusItem.color as 'blue' | 'violet' | 'emerald' | 'rose'];
 
@@ -294,11 +294,11 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
 
             <div className="w-full pb-1">
               <div className="flex flex-col items-center w-full bg-muted/5 rounded-3xl border border-border/40 p-5 gap-4">
-                
+
                 {/* Circles Row with solid connecting track line */}
                 <div className="flex items-center justify-between w-full px-8 relative">
                   <div className="absolute left-[44px] right-[44px] top-1/2 -translate-y-1/2 h-[2px] bg-zinc-200 dark:bg-zinc-800/60 pointer-events-none" />
-                  
+
                   {[
                     { id: 'APTITUDE', label: 'Aptitude', icon: <Brain size={14} /> },
                     { id: 'TECHNICAL', label: 'Technical', icon: <Code2 size={14} /> },
@@ -308,7 +308,7 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
                     const isCompleted = progressState === 'completed';
                     const isActive = progressState === 'active';
                     const isFailed = progressState === 'failed';
-                    
+
                     const isUISelected = targetRound === round.id;
                     const isRoundDisabled = isRoundBackward(selectedApp.currentRound, round.id);
 
@@ -320,7 +320,7 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
                         {isActive && !isUISelected && (
                           <span className="absolute -inset-1 rounded-full animate-ping bg-blue-400/20 dark:bg-blue-500/30 opacity-75 pointer-events-none" />
                         )}
-                        
+
                         <button
                           type="button"
                           id={`pipeline-round-${round.id.toLowerCase()}`}
@@ -329,12 +329,12 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
                           className={`size-10 rounded-full border-2 flex items-center justify-center transition-all duration-300 relative z-10 cursor-pointer shadow-xs hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed
                             ${isUISelected
                               ? 'border-violet-500 bg-violet-600 text-white dark:bg-violet-600 shadow-md shadow-violet-500/20'
-                              : isCompleted 
-                                ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 animate-in fade-in' 
-                                : isActive 
-                                  ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 animate-in fade-in' 
-                                  : isFailed 
-                                    ? 'border-rose-500 bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-405' 
+                              : isCompleted
+                                ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 animate-in fade-in'
+                                : isActive
+                                  ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 animate-in fade-in'
+                                  : isFailed
+                                    ? 'border-rose-500 bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-405'
                                     : 'border-zinc-250 bg-white text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 hover:border-zinc-350 hover:text-zinc-600'}`}
                           title={isRoundDisabled ? 'Cannot select a completed or previous round' : `Click to select ${round.label} round`}
                         >
@@ -403,7 +403,7 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
                 : targetStatus === 'SELECTED'
                   ? ['Offered extended post interview', 'Outstanding technical & HR performance', 'Immediate release of offer letter']
                   : ['Lacks sufficient core skills', 'Interview feedback not cleared', 'Did not clear technical interview'];
-              
+
               return presets.map((preset) => (
                 <button
                   key={preset}

@@ -39,7 +39,8 @@ interface InterviewSchedule {
 
 const CompanyInterviewManager: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { schedules, loading } = useSelector((state: RootState) => state.interview);
+  const { schedules: rawSchedules, loading } = useSelector((state: RootState) => state.interview);
+  const schedules = Array.isArray(rawSchedules) ? rawSchedules : [];
 
   const [selectedSchedule, setSelectedSchedule] = useState<InterviewSchedule | null>(null);
   const [isApplicationsModalOpen, setIsApplicationsModalOpen] = useState(false);
