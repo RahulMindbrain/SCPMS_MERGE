@@ -3,6 +3,7 @@ import {
   InterviewRound,
   NotificationType,
   Prisma,
+  Role,
 } from "@prisma/client";
 
 import prisma from "../config/db";
@@ -39,6 +40,7 @@ import {
 import { getAdminByUserId } from "../repository/admin.repository";
 import { evaluateATSForApplication } from "./application/ats.evaluation.service";
 import { optimizeStudentResume } from "./application/resume.optimization.service";
+import { getScheduleById } from "../repository/schedule.repository";
 
 export const createApplicationService = async (
   userId: number,
@@ -473,22 +475,56 @@ export const updateApplicationService = async ({
 
 export const getScheduleApplicationsService = async (
   scheduleId: number,
+  userId: number,
+  role: Role,
   page?: number,
   limit?: number,
 ) => {
-  const applications = await getApplicationsBySchedule(scheduleId, page, limit);
+  const schedule = await getScheduleById(scheduleId);
 
-  if (Array.isArray(applications)) {
-    if (applications.length === 0) {
-      throw new Error("No applications found for this schedule");
-    }
-  } else {
-    if (applications.data.length === 0) {
-      return applications;
-    }
+  if (!schedule) {
+    throw new Error("Schedule not found");
   }
 
-  return applications;
+  let universityId: number;
+
+  if (role === Role.ADMIN) {
+    const admin = await getAdminByUserId(userId);
+
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+
+    universityId = admin.universityId;
+
+    if (schedule.university && schedule.university.id !== admin.universityId) {
+      throw new Error(
+        "You are not authorized to view applications for this schedule",
+      );
+    }
+  } else if (role === Role.COMPANY) {
+    const company = await getCompanyByUserId(userId);
+
+    if (!company) {
+      throw new Error("Company not found");
+    }
+
+    if (schedule.company.id !== company.id) {
+      throw new Error(
+        "You are not authorized to view applications for this schedule",
+      );
+    }
+
+    if (!schedule.university) {
+      throw new Error("University not attached to schedule");
+    }
+
+    universityId = schedule.university.id;
+  } else {
+    throw new Error("Unauthorized role");
+  }
+
+  return await getApplicationsBySchedule(scheduleId, universityId, page, limit);
 };
 
 export const deleteApplicationService = async (id: number) => {

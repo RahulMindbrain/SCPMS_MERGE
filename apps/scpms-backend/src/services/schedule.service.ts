@@ -11,6 +11,8 @@ import {
   getScheduleWithJobsAndApplications,
   updateScheduleApprovalStatus,
   getSchedulesByCompanyIdRepo,
+  getSchedulesForCompany,
+  getSchedulesForAdmin,
 } from "../repository/schedule.repository";
 
 import {
@@ -48,6 +50,7 @@ import {
   allowedRoundTransitions,
   allowedStatusTransitions,
 } from "../constants/workflow.constants";
+import { getAdminByUserId } from "../repository/admin.repository";
 
 type CreateInterviewScheduleInput = {
   title: string;
@@ -240,26 +243,41 @@ export const getAllSchedulesService = async (
   userId: number,
   role: "ADMIN" | "COMPANY",
   companyIdFromQuery?: number,
+  universityIdFromQuery?: number,
+  page: number = 1,
+  limit: number = 10,
+  status?: ScheduleStatus,
 ) => {
-  let companyId: number;
+  //console.log("getAllSchedulesService");
+  if (role === "ADMIN") {
+    const admin = await getAdminByUserId(userId);
 
-  if (role === "COMPANY") {
-    const company = await getCompanyByUserId(userId);
-
-    if (!company) {
-      throw new Error("Company not found");
+    if (!admin) {
+      throw new Error("Admin not found");
     }
 
-    companyId = company.id;
-  } else {
-    if (!companyIdFromQuery) {
-      throw new Error("Company ID is required");
-    }
-
-    companyId = companyIdFromQuery;
+    return getSchedulesForAdmin(
+      admin.universityId,
+      companyIdFromQuery,
+      page,
+      limit,
+      status,
+    );
   }
 
-  return getAllSchedules(companyId);
+  const company = await getCompanyByUserId(userId);
+
+  if (!company) {
+    throw new Error("Company not found");
+  }
+
+  return getSchedulesForCompany(
+    company.id,
+    universityIdFromQuery,
+    page,
+    limit,
+    status,
+  );
 };
 
 export const getScheduleByIdService = async (id: number) => {

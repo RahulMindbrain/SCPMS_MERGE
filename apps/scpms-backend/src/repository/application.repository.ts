@@ -350,6 +350,7 @@ export const withdrawOtherApplications = async (
 
 export const getApplicationsBySchedule = async (
   scheduleId: number,
+  universityId: number,
   page?: number,
   limit?: number,
 ) => {
@@ -362,6 +363,7 @@ export const getApplicationsBySchedule = async (
   const where = {
     jobUniversity: {
       interviewScheduleId: scheduleId,
+      universityId,
     },
   };
 
