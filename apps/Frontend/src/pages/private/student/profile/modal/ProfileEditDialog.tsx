@@ -161,21 +161,21 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[750px] max-h-[90vh] overflow-hidden p-0 bg-background dark:bg-slate-950 border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] dark:shadow-none rounded-[2rem] flex flex-col">
-        <DialogHeader className="p-10 pb-6 bg-gradient-to-br from-[#f8faff] to-[#ffffff] dark:from-slate-900 dark:to-slate-950 border-b border-border/50 shrink-0">
+      <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-hidden p-0 bg-background dark:bg-slate-950 border-none shadow-2xl rounded-2xl flex flex-col">
+        <DialogHeader className="p-6 pb-4 bg-gradient-to-br from-[#f8faff] to-[#ffffff] dark:from-slate-900 dark:to-slate-950 border-b border-border/50 shrink-0">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
-                <User className="h-7 w-7" />
+            <div className="flex items-center gap-3">
+              <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+                <User className="h-6 w-6" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-black text-foreground tracking-tight">Identity & Profile</DialogTitle>
-                <DialogDescription className="text-muted-foreground text-sm font-medium">Configure your professional and academic presence.</DialogDescription>
+                <DialogTitle className="text-xl font-black text-foreground tracking-tight">Edit Profile</DialogTitle>
+                <DialogDescription className="text-muted-foreground text-xs font-semibold">Update your personal, academic, and professional information.</DialogDescription>
               </div>
             </div>
-            <div className="hidden md:flex px-4 py-2 rounded-xl bg-primary/5 border border-primary/10 items-center gap-2">
-               <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-               <span className="text-[10px] font-black text-primary uppercase tracking-widest">Self-Editing Mode</span>
+            <div className="hidden md:flex px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/10 items-center gap-2">
+               <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+               <span className="text-[9px] font-black text-primary uppercase tracking-widest">Editing Profile</span>
             </div>
           </div>
         </DialogHeader>
@@ -185,10 +185,10 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
             <Tabs defaultValue="personal" className="w-full">
               <TabsList className="flex gap-6 border-b mb-6 bg-transparent p-0">
                 {[
-                  { value: "personal", label: "Identity", icon: User },
-                  { value: "academic", label: "Records", icon: GraduationCap },
-                  { value: "social", label: "Networks", icon: Globe },
-                  { value: "skills", label: "Abilities", icon: Code2 }
+                  { value: "personal", label: "Personal Details", icon: User },
+                  { value: "academic", label: "Education", icon: GraduationCap },
+                  { value: "social", label: "Social Links", icon: Globe },
+                  { value: "skills", label: "Skills", icon: Code2 }
                 ].map((tab) => (
                   <TabsTrigger 
                     key={tab.value}
@@ -204,13 +204,13 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
               {/* PERSONAL CONTENT */}
               <TabsContent value="personal" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <Label htmlFor="name" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Legal Full Name</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Full Name</Label>
                     <div className="relative group">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                       <Input
                         id="name"
-                        className={`pl-12 h-13 rounded-2xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-semibold ${errors.name ? 'border-rose-500 bg-rose-500/5' : ''}`}
+                        className={`pl-10 h-11 rounded-xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-semibold ${errors.name ? 'border-rose-500 bg-rose-500/5' : ''}`}
                         value={formData.name || ""}
                         onChange={(e) => updateField("name", e.target.value)}
                       />
@@ -218,14 +218,14 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
                     {errors.name && <p className="text-[10px] text-rose-500 font-black uppercase ml-1 tracking-wider">{errors.name}</p>}
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="email" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Institutional Email</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">College Email Address</Label>
                     <div className="relative group">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                       <Input
                         id="email"
                         type="email"
-                        className={`pl-12 h-13 rounded-2xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-semibold ${errors.email ? 'border-rose-500 bg-rose-500/5' : ''}`}
+                        className={`pl-10 h-11 rounded-xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-semibold ${errors.email ? 'border-rose-500 bg-rose-500/5' : ''}`}
                         value={formData.email || ""}
                         onChange={(e) => updateField("email", e.target.value)}
                       />
@@ -238,21 +238,21 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
               {/* ACADEMIC CONTENT */}
               <TabsContent value="academic" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="md:col-span-2 space-y-3">
-                    <Label htmlFor="university" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Affiliated University (Read Only)</Label>
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor="university" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">University Name (Read Only)</Label>
                     <div className="relative group opacity-80">
-                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors" />
+                      <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors" />
                       <Input
                         id="university"
-                        className="pl-12 h-13 rounded-2xl border-border/50 bg-muted/40 dark:bg-slate-900/50 focus:ring-0 focus:border-border/50 font-bold"
+                        className="pl-10 h-11 rounded-xl border-border/50 bg-muted/40 dark:bg-slate-900/50 focus:ring-0 focus:border-border/50 font-bold"
                         value={formData.stats?.university || "Not Affiliated"}
                         readOnly
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="cgpa" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Current Cumulative GPA</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="cgpa" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">CGPA (Out of 10)</Label>
                     <Input
                       id="cgpa"
                       type="number"
@@ -260,48 +260,48 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
                       min="0"
                       max="10"
                       placeholder="0.00"
-                      className={`h-13 rounded-2xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.cgpa'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
+                      className={`h-11 rounded-xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.cgpa'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
                       value={formData.stats?.cgpa || ""}
                       onChange={(e) => updateStat("cgpa", e.target.value)}
                     />
                     {errors['stats.cgpa'] && <p className="text-[10px] text-rose-500 font-black uppercase ml-1 tracking-wider">{errors['stats.cgpa']}</p>}
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="year" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Current Year of Study</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="year" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Year of Study</Label>
                     <Input
                       id="year"
                       type="number"
                       min="1"
                       max="5"
-                      className={`h-13 rounded-2xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.year'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
+                      className={`h-11 rounded-xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.year'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
                       value={formData.stats?.year || ""}
                       onChange={(e) => updateStat("year", e.target.value)}
                     />
                     {errors['stats.year'] && <p className="text-[10px] text-rose-500 font-black uppercase ml-1 tracking-wider">{errors['stats.year']}</p>}
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="passingYear" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Graduation Batch (Year)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="passingYear" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Graduation Year</Label>
                     <Input
                       id="passingYear"
                       type="number"
                       min="2000"
-                      className={`h-13 rounded-2xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.passingYear'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
+                      className={`h-11 rounded-xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.passingYear'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
                       value={formData.stats?.passingYear || ""}
                       onChange={(e) => updateStat("passingYear", e.target.value)}
                     />
                     {errors['stats.passingYear'] && <p className="text-[10px] text-rose-500 font-black uppercase ml-1 tracking-wider">{errors['stats.passingYear']}</p>}
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="activeBacklogs" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Active Backlogs Count</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="activeBacklogs" className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Active Backlogs</Label>
                     <Input
                       id="activeBacklogs"
                       type="number"
                       min="0"
                       placeholder="0"
-                      className={`h-13 rounded-2xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.activeBacklogs'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
+                      className={`h-11 rounded-xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-black tabular-nums ${errors['stats.activeBacklogs'] ? 'border-rose-500 bg-rose-500/5' : ''}`}
                       value={formData.stats?.activeBacklogs ?? ""}
                       onChange={(e) => updateStat("activeBacklogs", e.target.value)}
                     />
@@ -311,21 +311,21 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
               </TabsContent>
 
               {/* SOCIAL CONTENT */}
-              <TabsContent value="social" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <div className="grid grid-cols-1 gap-8">
+              <TabsContent value="social" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="grid grid-cols-1 gap-6">
                   {[
                     { id: "linkedinUrl", label: "LinkedIn Profile URL", icon: LinkIcon, placeholder: "https://linkedin.com/in/username" },
                     { id: "githubUrl", label: "GitHub Portfolio URL", icon: Code2, placeholder: "https://github.com/username" },
                     { id: "portfolioUrl", label: "Personal Website URL", icon: Globe, placeholder: "https://yourportfolio.com" }
                   ].map((social) => (
-                    <div key={social.id} className="space-y-3">
+                    <div key={social.id} className="space-y-2">
                       <Label htmlFor={social.id} className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">{social.label}</Label>
                       <div className="relative group">
-                        <social.icon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <social.icon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                           id={social.id}
                           placeholder={social.placeholder}
-                          className={`pl-12 h-13 rounded-2xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-semibold ${errors[social.id] ? 'border-rose-500 bg-rose-500/5' : ''}`}
+                          className={`pl-10 h-11 rounded-xl border-border/50 bg-background focus:ring-primary/20 focus:border-primary transition-all font-semibold ${errors[social.id] ? 'border-rose-500 bg-rose-500/5' : ''}`}
                           value={formData[social.id] || ""}
                           onChange={(e) => updateField(social.id, e.target.value)}
                         />
@@ -337,45 +337,45 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
               </TabsContent>
 
               {/* SKILLS CONTENT */}
-              <TabsContent value="skills" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <Label className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Stack Expansion</Label>
+              <TabsContent value="skills" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Add a Skill</Label>
                     <select
-                      className="flex h-13 w-full rounded-2xl border border-border/50 bg-background px-4 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer shadow-sm hover:border-primary/30"
+                      className="flex h-11 w-full rounded-xl border border-border/50 bg-background px-4 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer shadow-sm hover:border-primary/30"
                       value=""
                       onChange={(e) => {
                         const selectedSkill = allSkillsList.find(s => s.id === parseInt(e.target.value));
                         if (selectedSkill) addSkill(selectedSkill);
                       }}
                     >
-                      <option value="" disabled>Select technical credentials to add...</option>
+                      <option value="" disabled>Select a skill to add...</option>
                       {allSkillsList.map(skill => (
                         <option key={skill.id} value={skill.id}>{skill.name}</option>
                       ))}
                     </select>
                   </div>
 
-                  <div className="p-8 rounded-3xl bg-muted/30 border border-dashed border-border/50 min-h-[160px] flex flex-wrap gap-3 items-start content-start">
+                  <div className="p-6 rounded-2xl bg-muted/30 border border-dashed border-border/50 min-h-[140px] flex flex-wrap gap-2.5 items-start content-start">
                     {formData.skills?.length > 0 ? (
                       formData.skills.map((skill: any, i: number) => (
-                        <Badge key={i} className="pl-4 pr-1.5 py-2 rounded-xl bg-background border border-border shadow-sm text-foreground flex items-center gap-2 group/skill hover:border-primary transition-all">
-                          <span className="text-xs font-black uppercase tracking-tight">{skill.name}</span>
+                        <Badge key={i} className="pl-3 pr-1 py-1 rounded-lg bg-background border border-border shadow-sm text-foreground flex items-center gap-2 group/skill hover:border-primary transition-all">
+                          <span className="text-[11px] font-black uppercase tracking-tight">{skill.name}</span>
                           <Button 
                             type="button" 
                             variant="ghost" 
                             size="icon" 
-                            className="size-6 rounded-lg hover:bg-rose-500 hover:text-white transition-all" 
+                            className="size-5 rounded-md hover:bg-rose-500 hover:text-white transition-all" 
                             onClick={() => removeSkill(i)}
                           >
-                            <X className="size-3" />
+                            <X className="size-2.5" />
                           </Button>
                         </Badge>
                       ))
                     ) : (
                       <div className="w-full flex flex-col items-center justify-center py-6 opacity-40">
-                         <Code2 className="size-10 mb-2" />
-                         <p className="text-xs font-semibold text-muted-foreground">No abilities indexed yet</p>
+                         <Code2 className="size-8 mb-2" />
+                         <p className="text-[11px] font-semibold text-muted-foreground">No skills added yet</p>
                       </div>
                     )}
                   </div>
@@ -387,8 +387,8 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
 
             {/* RESUME SECTION */}
             <div className="space-y-4">
-              <Label className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Carrier-Grade Resume (PDF Only, Max 10MB)</Label>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-6 rounded-3xl bg-primary/[0.03] border border-primary/10">
+              <Label className="text-xs font-semibold text-muted-foreground text-muted-foreground ml-1">Upload Resume (PDF only, Max 10MB)</Label>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-5 rounded-2xl bg-primary/[0.03] border border-primary/10">
                 <input
                   type="file"
                   id="resume-upload"
@@ -402,52 +402,68 @@ const ProfileEditDialog = ({ isOpen, onClose, profile, onSave, isLoading, isAppr
                       const url = await upload(file, "resumes");
                       if (url) {
                         updateField("resumeUrl", url);
-                        toast.success("Identity verified with document");
+                        toast.success("Resume uploaded successfully");
                       }
                     } catch (error) {
-                      toast.error("Handshake failed during upload");
+                      toast.error("Failed to upload resume");
                     } finally {
                       setIsUploading(false);
                     }
                   }}
                 />
                 
-                <div className={`size-14 rounded-2xl flex items-center justify-center transition-all ${formData.resumeUrl ? 'bg-emerald-500 text-white' : 'bg-primary text-white shadow-lg shadow-primary/20'}`}>
-                   {formData.resumeUrl ? <CheckCircle2 className="size-6" /> : <FileText className="size-6" />}
+                <div className={`size-12 rounded-xl flex items-center justify-center transition-all ${formData.resumeUrl ? 'bg-emerald-500 text-white' : 'bg-primary text-white shadow-md'}`}>
+                   {formData.resumeUrl ? <CheckCircle2 className="size-5" /> : <FileText className="size-5" />}
                 </div>
 
                 <div className="flex-1">
-                   <p className="text-sm font-black text-foreground mb-0.5">{formData.resumeUrl ? 'PDF Synced' : 'Awaiting Document'}</p>
-                   <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{formData.resumeUrl ? 'Cloud reference active' : 'PDF format required (Max 10MB)'}</p>
+                   <p className="text-sm font-black text-foreground mb-0.5">{formData.resumeUrl ? 'Resume Synced' : 'No Resume Uploaded'}</p>
+                   <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{formData.resumeUrl ? 'Your resume is uploaded and ready' : 'Please upload a PDF document'}</p>
                 </div>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11 rounded-xl bg-background border-border hover:bg-muted font-bold text-xs uppercase tracking-widest gap-2 shadow-sm"
-                  onClick={() => document.getElementById('resume-upload')?.click()}
-                  disabled={isUploading}
-                >
-                  {isUploading ? <Loader size="sm" /> : <Upload className="size-3.5" />}
-                  {formData.resumeUrl ? "Replace PDF" : "Push PDF"}
-                </Button>
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-10 rounded-xl bg-background border-border hover:bg-muted font-bold text-xs uppercase tracking-widest gap-2 shadow-sm"
+                    onClick={() => document.getElementById('resume-upload')?.click()}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? <Loader size="sm" /> : <Upload className="size-3.5" />}
+                    {formData.resumeUrl ? "Change PDF" : "Upload PDF"}
+                  </Button>
+                  {formData.resumeUrl && (
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        if (confirm("Are you sure you want to remove your resume?")) {
+                          updateField("resumeUrl", "");
+                          toast.success("Resume removed");
+                        }
+                      }}
+                      className="h-10 rounded-xl bg-rose-600/90 hover:bg-rose-600 text-white font-bold text-xs uppercase tracking-widest gap-2 shadow-sm border-none"
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
               </div>
               {errors.resumeUrl && <p className="text-[10px] text-rose-500 font-black uppercase ml-1 tracking-wider">{errors.resumeUrl}</p>}
             </div>
           </div>
         </form>
 
-        <DialogFooter className="p-10 bg-gradient-to-t from-muted/30 to-transparent border-t border-border/50 shrink-0 gap-4">
+        <DialogFooter className="p-6 bg-gradient-to-t from-muted/30 to-transparent border-t border-border/50 shrink-0 gap-3">
           <DialogClose asChild>
-            <Button type="button" variant="ghost" className="rounded-2xl h-14 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:bg-muted transition-all">Discard</Button>
+            <Button type="button" variant="ghost" className="rounded-xl h-11 px-6 font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:bg-muted transition-all">Discard</Button>
           </DialogClose>
           <Button
             type="submit"
             onClick={handleSubmit}
-            className="rounded-2xl bg-primary hover:bg-primary/90 h-14 px-12 font-black text-[10px] uppercase tracking-[0.2em] text-white shadow-2xl shadow-primary/30 active:scale-95 transition-all flex-1 md:flex-none"
+            className="rounded-xl bg-primary hover:bg-primary/90 h-11 px-8 font-black text-[10px] uppercase tracking-widest text-white shadow-lg shadow-primary/20 active:scale-95 transition-all flex-1 md:flex-none"
             disabled={isLoading || isUploading || !isApproved}
           >
-            {isLoading ? <Loader size="sm" /> : "Commit Profile Updates"}
+            {isLoading ? <Loader size="sm" /> : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -507,8 +507,8 @@ const StudentProfile = () => {
                       <GraduationCap className="h-6 w-6 md:h-7 md:w-7" />
                     </div>
                     <div>
-                      <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Academic Profile</h3>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Verified Scholastic Records</p>
+                      <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Academic Details</h3>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Education Records</p>
                     </div>
                   </div>
 
@@ -547,8 +547,8 @@ const StudentProfile = () => {
                         <Briefcase className="h-6 w-6 md:h-7 md:w-7" />
                       </div>
                       <div>
-                        <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Professional History</h3>
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Career Timeline & Roles</p>
+                        <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Work Experience</h3>
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Past Jobs & Internships</p>
                       </div>
                     </div>
                     <Button onClick={() => isApproved && setShowExperienceModal(true)} disabled={!isApproved} variant="ghost" size="sm" className="w-fit text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50">
@@ -608,8 +608,8 @@ const StudentProfile = () => {
                       <Code2 className="h-6 w-6 md:h-7 md:w-7" />
                     </div>
                     <div>
-                      <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Technical Stack</h3>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Core Competencies</p>
+                      <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Technical Skills</h3>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Core Technologies & Tools</p>
                     </div>
                   </div>
 
@@ -815,16 +815,33 @@ const StudentProfile = () => {
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-bold truncate">{profile.name}_Resume.pdf</p>
-                          <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{profile.resumeUrl ? 'PDF Document • Ready' : 'No document uploaded'}</p>
+                          <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{profile.resumeUrl ? 'PDF Resume • Uploaded' : 'No resume uploaded'}</p>
                         </div>
                       </div>
-                      <Button
-                        onClick={() => profile.resumeUrl && openFile(profile.resumeUrl, `${profile.name}_Resume`)}
-                        disabled={!profile.resumeUrl}
-                        className="w-full sm:w-auto bg-white text-slate-900 hover:bg-slate-100 rounded-xl px-4 h-9 text-xs font-black shadow-lg shadow-white/5 transition-transform active:scale-95 shrink-0 border-none"
-                      >
-                        View Resume
-                      </Button>
+                      <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                        <Button
+                          onClick={() => profile.resumeUrl && openFile(profile.resumeUrl, `${profile.name}_Resume`)}
+                          disabled={!profile.resumeUrl}
+                          className="w-full sm:w-auto bg-white text-slate-900 hover:bg-slate-100 rounded-xl px-4 h-9 text-xs font-black shadow-lg shadow-white/5 transition-transform active:scale-95 border-none"
+                        >
+                          View Resume
+                        </Button>
+                        {profile.resumeUrl && (
+                          <Button
+                            onClick={async () => {
+                              if (confirm("Are you sure you want to remove your resume?")) {
+                                const res = await handleSave({ ...profile, resumeUrl: '' });
+                                if (res?.success) {
+                                  toast.success("Resume removed successfully");
+                                }
+                              }
+                            }}
+                            className="w-full sm:w-auto bg-rose-600/80 hover:bg-rose-600 text-white rounded-xl px-4 h-9 text-xs font-black shadow-lg shadow-rose-600/20 transition-transform active:scale-95 border-none"
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   )}
                 </CardContent>
