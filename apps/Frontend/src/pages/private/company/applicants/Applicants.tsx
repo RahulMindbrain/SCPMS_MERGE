@@ -741,8 +741,8 @@ const Applicants: React.FC = () => {
                                   <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">{app.jobUniversity?.job?.location || 'Remote'}</span>
                                   <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 select-none">•</span>
                                   <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/5 dark:bg-emerald-500/10 rounded-lg border border-emerald-500/10">
-                                    {app.jobUniversity?.job?.salary 
-                                      ? `${(app.jobUniversity.job.salary / 100000).toFixed(1)} LPA` 
+                                    {app.jobUniversity?.salary 
+                                      ? `${(app.jobUniversity.salary / 100000).toFixed(1)} LPA` 
                                       : 'Competitive'}
                                   </span>
                                 </div>

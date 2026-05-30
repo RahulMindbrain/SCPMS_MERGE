@@ -15,6 +15,7 @@ import {
   markNotificationAsRead,
   fetchUpcomingEvents,
   fetchUnreadCount,
+  fetchNotifications,
 } from '@/redux/thunks/notificationThunks';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -51,6 +52,12 @@ const AdminNotificationPage = () => {
   } = useSelector((state: RootState) => state.notification || {});
 
 
+  // ── Fetch notifications on mount ──────────────────────────────────────
+  useEffect(() => {
+    dispatch(fetchNotifications({ page: 1, limit: 50 }));
+  }, [dispatch]);
+
+  // ── Socket: join room ──────────────────────────────────────────────────
   useEffect(() => {
     if (!socket || !user) return;
 

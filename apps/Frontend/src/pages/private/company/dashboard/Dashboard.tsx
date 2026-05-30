@@ -25,12 +25,29 @@ export default function Dashboard() {
 
   const metrics = useMemo(() => {
     const totalJobs = jobs.length
-    const avgSalary =
-      totalJobs > 0
-        ? jobs.reduce((sum: number, job: any) => sum + (Number(job.salary) || 0), 0) / totalJobs
-        : 0
 
-    const selectedApps = applications.filter((app: any) => app.status === "SELECTED")
+    // Derive avgSalary from applications → jobUniversity.salary
+    // Deduplicate by jobUniversity id so each drive counts only once
+    const seenJU = new Set<number>()
+    let totalSalary = 0
+    let salaryCount = 0
+    applications.forEach((app: any) => {
+      const ju = app.jobUniversity
+      if (!ju) return
+      const juId = ju.id
+      if (juId && seenJU.has(juId)) return
+      if (juId) seenJU.add(juId)
+      const sal = Number(ju.salary)
+      if (sal > 0) {
+        totalSalary += sal
+        salaryCount++
+      }
+    })
+    const avgSalary = salaryCount > 0 ? totalSalary / salaryCount : 0
+
+    const placedApps = applications.filter(
+      (app: any) => app.status === "SELECTED" || app.status === "OFFER_ACCEPTED"
+    )
     const uniqueStudents = new Set(
       applications.map((app: any) => app.student?.id).filter(Boolean)
     ).size
@@ -51,7 +68,7 @@ export default function Dashboard() {
 
       const current = departmentMap.get(department)!
       current.students.add(studentId)
-      if (app.status === "SELECTED") {
+      if (app.status === "SELECTED" || app.status === "OFFER_ACCEPTED") {
         current.selectedStudents.add(studentId)
       }
     })
@@ -68,7 +85,7 @@ export default function Dashboard() {
       totalJobs,
       avgSalary,
       totalApplicants: uniqueStudents,
-      totalPlaced: new Set(selectedApps.map((app: any) => app.student?.id).filter(Boolean)).size,
+      totalPlaced: new Set(placedApps.map((app: any) => app.student?.id).filter(Boolean)).size,
       deptStats,
     }
   }, [applications, jobs])
